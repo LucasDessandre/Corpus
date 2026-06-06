@@ -705,7 +705,7 @@
 
   /* ────────────────────────────────────────
      CARREGAR VÍDEO NATIVO (HTML5)
-     Sem anúncios, em loop e mudo
+     Com controles de Pause/Play e Áudio
   ──────────────────────────────────────── */
   function carregarVideo(cardId, videoUrl) {
     if (state.videoCarregado.has(cardId)) return;
@@ -724,23 +724,31 @@
 
       const video = document.createElement('video');
       video.src = videoUrl;
-      video.autoplay = true;
-      video.loop = true;
-      video.muted = true; // Obrigatório ser mudo para o autoplay funcionar no celular!
-      video.playsInline = true; // Evita que o vídeo abra em tela cheia no iPhone
+      video.autoplay = true; 
       
+      // Ativamos os controles (Pause, Play, Som, Tela cheia)
+      video.controls = true; 
+      
+      // Permitimos que o vídeo não abra em tela cheia automático no iPhone
+      video.playsInline = true; 
+      
+      // Opcional: Se algum navegador bloquear o autoplay com som, o player 
+      // vai apenas carregar e esperar o usuário apertar o "Play" manualmente.
+
       // Estilos para o vídeo preencher o espaço certinho
       video.style.position = 'absolute';
       video.style.inset = '0';
       video.style.width = '100%';
       video.style.height = '100%';
-      video.style.objectFit = 'cover'; // Mantém a proporção cortando as bordas se necessário
+      // O objectFit 'contain' garante que os controles não fiquem cortados
+      video.style.objectFit = 'contain'; 
+      video.style.backgroundColor = '#000'; // Fundo preto para as bordas do vídeo
       video.style.borderRadius = 'var(--radius)';
 
       wrapper.appendChild(video);
     }, 250);
   }
-
+  
   /* ────────────────────────────────────────
      TROCA DE ABAS (Execução / Alertas / Dicas)
   ──────────────────────────────────────── */
