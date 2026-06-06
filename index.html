@@ -129,7 +129,7 @@
       secundario: ['Tríceps', 'Deltóide Ant.'],
       dificuldade: 'iniciante',
       icone: '<img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/chest.png" alt="chest"/>',
-      youtubeId: 'rT7DgCr-3pg',
+      videoUrl: 'videos/supino_reto_barra',
       passos: [
         'Deite no banco com os pés firmes no chão, largura dos ombros.',
         'Segure a barra levemente mais larga que os ombros, palmas para frente.',
@@ -562,14 +562,13 @@
 
         <div class="video-zone">
           <div class="video-ratio">
-            <div class="video-thumb" id="thumb-${ex.id}" onclick="carregarVideo('${ex.id}', '${ex.youtubeId}')">
+            <div class="video-thumb" id="thumb-${ex.id}" onclick="carregarVideo('${ex.id}', '${ex.videoUrl}')">
               <div class="play-ring">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M8 5v14l11-7z"/>
                 </svg>
               </div>
               <span class="video-label">Toque para ver a execução</span>
-              <span class="yt-badge">▶ YouTube</span>
             </div>
           </div>
         </div>
@@ -705,10 +704,10 @@
   }
 
   /* ────────────────────────────────────────
-     CARREGAR VÍDEO DO YOUTUBE (lazy load)
-     Evita carregar iframes desnecessariamente
+     CARREGAR VÍDEO NATIVO (HTML5)
+     Sem anúncios, em loop e mudo
   ──────────────────────────────────────── */
-  function carregarVideo(cardId, ytId) {
+  function carregarVideo(cardId, videoUrl) {
     if (state.videoCarregado.has(cardId)) return;
     const thumb = document.getElementById(`thumb-${cardId}`);
     if (!thumb) return;
@@ -723,11 +722,22 @@
       const wrapper = thumb.parentElement;
       thumb.remove();
 
-      const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-      iframe.setAttribute('allowfullscreen', '');
-      wrapper.appendChild(iframe);
+      const video = document.createElement('video');
+      video.src = videoUrl;
+      video.autoplay = true;
+      video.loop = true;
+      video.muted = true; // Obrigatório ser mudo para o autoplay funcionar no celular!
+      video.playsInline = true; // Evita que o vídeo abra em tela cheia no iPhone
+      
+      // Estilos para o vídeo preencher o espaço certinho
+      video.style.position = 'absolute';
+      video.style.inset = '0';
+      video.style.width = '100%';
+      video.style.height = '100%';
+      video.style.objectFit = 'cover'; // Mantém a proporção cortando as bordas se necessário
+      video.style.borderRadius = 'var(--radius)';
+
+      wrapper.appendChild(video);
     }, 250);
   }
 
