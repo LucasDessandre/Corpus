@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CORPUS — Biblioteca de Exercícios</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+  
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-main">
+      <div class="brand">
+        <span class="brand-text">CO<span class="accent">RPUS</span></span>
+        <span class="brand-badge">BETA</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="searchToggle" aria-label="Pesquisar exercício" title="Pesquisar">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+        </button>
+        <button class="icon-btn" aria-label="Perfil do usuário" title="Meu Perfil">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="7" r="4"/><path d="M4 21v-1a7 7 0 0 1 14 0v1"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="page-meta">
+      <span class="page-title">Biblioteca de Exercícios</span>
+    </div>
+
+    <div class="search-panel" id="searchPanel">
+      <div class="search-inner">
+        <div class="search-row">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input type="text" class="search-field" id="searchInput"
+            placeholder="Buscar exercício ou músculo..." autocomplete="off" spellcheck="false">
+          <button class="search-clear" id="searchClear" tabindex="-1">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main style="padding-bottom:90px;">
+
+    <section class="filter-section">
+      <span class="section-label">Grupo Muscular</span>
+      <div class="chips-scroll" id="filterBar">
+        <button class="chip active" data-filter="todos">
+        Todos <span class="chip-count" id="cnt-todos">13</span></button>
+        <button class="chip" data-filter="peito"> <img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/chest.png" alt="chest"/>
+        Peito <span class="chip-count" id="cnt-peito">3</span></button>
+        <button class="chip" data-filter="costas"><img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/back-muscles.png" alt="back-muscles"/> Costas <span class="chip-count" id="cnt-costas">3</span></button>
+        <button class="chip" data-filter="pernas"><img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/quadriceps.png" alt="quadriceps"/>Pernas <span class="chip-count" id="cnt-pernas">2</span></button>
+        <button class="chip" data-filter="ombros"><img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/shoulders.png" alt="shoulders"/> Ombros <span class="chip-count" id="cnt-ombros">2</span></button>
+        <button class="chip" data-filter="bracos"><img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/biceps.png" alt="biceps"/> Braços <span class="chip-count" id="cnt-bracos">2</span></button>
+        <button class="chip" data-filter="core"><img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/prelum.png" alt="prelum"/> Core <span class="chip-count" id="cnt-core">1</span></button>
+      </div>
+    </section>
+
+    <div class="results-bar">
+      <div class="results-label">
+        <em id="countNum">13</em> <small>exercícios</small>
+      </div>
+      <div class="sort-row">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M3 6h18M7 12h10M11 18h2"/>
+        </svg>
+        Ordenar
+      </div>
+    </div>
+
+    <section class="exercise-list" id="exList"></section>
+
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">Nenhum resultado</div>
+      <div class="empty-sub">Tente outro grupo muscular<br>ou termo de busca</div>
+    </div>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <div class="nav-btn">
+      <span class="nav-ico">🏠</span>
+      <span class="nav-lbl">Início</span>
+    </div>
+    <div class="nav-btn active">
+      <span class="nav-ico">📚</span>
+      <span class="nav-lbl">Biblioteca</span>
+    </div>
+    <div class="nav-btn">
+      <span class="nav-ico">🗓️</span>
+      <span class="nav-lbl">Meu Treino</span>
+    </div>
+    <div class="nav-btn">
+      <span class="nav-ico">📊</span>
+      <span class="nav-lbl">Evolução</span>
+    </div>
+    <div class="nav-btn">
+      <span class="nav-ico">👤</span>
+      <span class="nav-lbl">Perfil</span>
+    </div>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+  const EXERCISES = [
+    // ── PEITO ──────────────────────────────────────────────
+    {
+      id: 'supino-reto',
+      nome: 'Supino Reto com Barra',
+      grupo: 'peito',
+      grupoLabel: 'Peito',
+      secundario: ['Tríceps', 'Deltóide Ant.'],
+      dificuldade: 'iniciante',
+      icone: '<img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/chest.png" alt="chest"/>',
+      youtubeId: 'rT7DgCr-3pg',
+      passos: [
+        'Deite no banco com os pés firmes no chão, largura dos ombros.',
+        'Segure a barra levemente mais larga que os ombros, palmas para frente.',
+        'Desça a barra de forma controlada até tocar levemente o peitoral (altura do mamilo).',
+        'Empurre a barra para cima exalando o ar, contraindo o peitoral ao final.',
+        'Mantenha as escápulas retraídas e os glúteos no banco durante toda a execução.',
+      ],
+      alertas: [
+        { critico: true,  texto: 'CRÍTICO: Nunca solte a barra ou faça a descida de forma explosiva sem controle.' },
+        { critico: false, texto: 'Evite arquear excessivamente a lombar — o arco natural é permitido.' },
+        { critico: false, texto: 'Não trave os cotovelos na extensão total para proteger as articulações.' },
+        { critico: false, texto: 'Use sempre um spotter ao trabalhar próximo da carga máxima.' },
+      ],
+      dicas: [
+        '"Espreme" o peitoral ao topo do movimento para maior ativação muscular.',
+        'Controle a descida em ~3 segundos para maximizar o trabalho excêntrico.',
+        'Varie a largura de pegada para recrutar diferentes partes do peitoral.',
+      ]
+    },
+    {
+      id: 'crucifixo',
+      nome: 'Crucifixo com Halteres',
+      grupo: 'peito',
+      grupoLabel: 'Peito',
+      secundario: ['Deltóide Ant.'],
+      dificuldade: 'iniciante',
+      icone: '<img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/chest.png" alt="chest"/>',
+      youtubeId: 'eozdVDA78K0',
+      passos: [
+        'Deite no banco com um halter em cada mão, braços estendidos acima do peito.',
+        'Com cotovelos levemente flexionados, abra os braços lateralmente em arco amplo.',
+        'Desça até sentir o alongamento no peitoral (halteres na altura dos ombros).',
+        'Retorne subindo em arco, como se estivesse "abraçando uma árvore grande".',
+      ],
+      alertas: [
+        { critico: true,  texto: 'CRÍTICO: Não abra os braços além do ombro — risco de lesão no manguito rotador.' },
+        { critico: false, texto: 'Mantenha a leve flexão dos cotovelos durante todo o movimento.' },
+        { critico: false, texto: 'Use pesos moderados — não é um exercício para cargas máximas.' },
+      ],
+      dicas: [
+        'Amplitude é mais importante que carga neste exercício.',
+        'Segure 1 segundo no ponto de maior alongamento para intensificar.',
+      ]
+    },
+    {
+      id: 'flexao',
+      nome: 'Flexão de Braço',
+      grupo: 'peito',
+      grupoLabel: 'Peito',
+      secundario: ['Tríceps', 'Deltóide', 'Core'],
+      dificuldade: 'iniciante',
+      icone: '<img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/chest.png" alt="chest"/>',
+      youtubeId: 'IODxDxX7oi4',
+      passos: [
+        'Posicione mãos levemente mais largas que os ombros, corpo em linha reta.',
+        'Mantenha o abdômen contraído e os glúteos alinhados — sem elevating o quadril.',
+        'Desça o tórax até próximo ao chão, cotovelos a ~45° do tronco.',
+        'Empurre o chão e suba até extensão dos cotovelos (sem travar completamente).',
+      ],
+      alertas: [
+        { critico: false, texto: 'Não deixe o quadril afundar ou subir — corpo deve ser rígido.' },
+        { critico: false, texto: 'Se sentir dor no punho, tente apoio nos punhos fechados.' },
+      ],
+      dicas: [
+        'Para facilitar, apoie os joelhos; para dificultar, eleve os pés.',
+        'Faça pausas de 2 seg no fundo para aumentar a intensidade.',
+      ]
+    },
+
+    // ── COSTAS ─────────────────────────────────────────────
+    {
+      id: 'remada-curvada',
+      nome: 'Remada Curvada com Barra',
+      grupo: 'costas',
+      grupoLabel: 'Costas',
+      secundario: ['Bíceps', 'Trapézio'],
+      dificuldade: 'intermediario',
+      icone: '<img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/back-muscles.png" alt="back-muscles"/>',
+      youtubeId: 'kBWAon7ItDw',
+      passos: [
+        'Em pé, incline o tronco a ~45° com coluna neutra e joelhos levemente flexionados.',
+        'Segure a barra com pegada pronada, levemente mais larga que os ombros.',
+        'Puxe a barra em direção ao umbigo, retraindo as escápulas ao final.',
+        'Desça de forma controlada até extensão completa dos braços.',
+        'Mantenha o olhar para baixo/frente para preservar a neutralidade cervical.',
+      ],
+      alertas: [
+        { critico: true,  texto: 'CRÍTICO: Nunca arredonde a lombar — causa mais comum de hérnia de disco.' },
+        { critico: false, texto: 'Não use impulso excessivo do quadril para levantar a carga.' },
+        { critico: false, texto: 'Se sentir dor na lombar, reduza a carga e verifique a postura.' },
+        { critico: false, texto: 'Mantenha o abdômen contraído durante toda a execução.' },
+      ],
+      dicas: [
+        'Pense em "puxar os cotovelos para trás" em vez de puxar pelas mãos.',
+        'Varie entre pegada pronada e supinada para ativação diferente do dorsal.',
+      ]
+    },
+    {
+      id: 'puxada-pulley',
+      nome: 'Puxada no Pulley',
+      grupo: 'costas',
+      grupoLabel: 'Costas',
+      secundario: ['Bíceps', 'Rombóides'],
+      dificuldade: 'iniciante',
+      icone: '<img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/back-muscles.png" alt="back-muscles"/>',
+      youtubeId: 'CAwf7n6Luuc',
+      passos: [
+        'Sente-se com as coxas presas sob o suporte, coluna ereta.',
+        'Segure a barra com pegada pronada mais larga que os ombros.',
+        'Puxe a barra até a parte superior do peitoral, cotovelos para baixo e para trás.',
+        'Retorne de forma lenta e controlada, alongando o dorsal na posição inicial.',
+      ],
+      alertas: [
+        { critico: true,  texto: 'NUNCA puxe a barra atrás da nuca — risco real de lesão cervical.' },
+        { critico: false, texto: 'Evite balançar o tronco para usar impulso em vez de força muscular.' },
+        { critico: false, texto: 'Mantenha o peito levemente projetado para frente durante o puxão.' },
+      ],
+      dicas: [
+        'Foque em sentir o dorsal trabalhando, não apenas os braços.',
+        'Pausa de 1 segundo na posição contraída aumenta a eficácia.',
+      ]
+    },
+    {
+      id: 'terra',
+      nome: 'Levantamento Terra',
+      grupo: 'costas',
+      grupoLabel: 'Costas',
+      secundario: ['Pernas', 'Glúteos', 'Core'],
+      dificuldade: 'avancado',
+      icone: '<img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/back-muscles.png" alt="back-muscles"/>',
+      youtubeId: 'op9kVnSso6Q',
+      passos: [
+        'Pés na largura do quadril, barra sobre o meio do pé.',
+        'Flexione quadris e joelhos, segure a barra com pegada pronada ou mista.',
+        'Peito para cima, coluna neutra e braços retos antes de iniciar.',
+        'Empurre o chão com os pés e suba a barra rente ao corpo até extensão total.',
+        'Desça revertendo o movimento com controle, coluna sempre neutra.',
+      ],
+      alertas: [
+        { critico: true,  texto: 'CRÍTICO: Nunca arredonde a lombar — esta é a principal causa de lesões graves.' },
+        { critico: true,  texto: 'CRÍTICO: Não realize com fadiga extrema — erros com carga alta são perigosos.' },
+        { critico: false, texto: 'Domine a técnica sem carga antes de progredir em peso.' },
+        { critico: false, texto: 'Use cinto e straps apenas após dominar completamente a técnica limpa.' },
+      ],
+      dicas: [
+        '"Quebre o chão" com os pés para ativar a cadeia posterior completa.',
+        'O terra recruta mais músculos que praticamente qualquer outro exercício.',
+      ]
+    },
+
+    // ── PERNAS ─────────────────────────────────────────────
+    {
+      id: 'agachamento',
+      nome: 'Agachamento Livre',
+      grupo: 'pernas',
+      grupoLabel: 'Pernas',
+      secundario: ['Glúteos', 'Lombar', 'Core'],
+      dificuldade: 'iniciante',
+      icone: '<img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/quadriceps.png" alt="quadriceps"/>',
+      youtubeId: 'ultWZbUMPL8',
+      passos: [
+        'Pés na largura dos ombros (ou um pouco mais), dedos levemente para fora.',
+        'Peito erguido, lombar neutra, olhar para frente ou levemente para cima.',
+        'Flexione joelhos e quadril simultaneamente, como se fosse sentar numa cadeira.',
+        'Desça até as coxas ficarem paralelas ao chão (ou mais, conforme mobilidade).',
+        'Suba empurrando o chão com os pés e contraindo os glúteos ao topo.',
+      ],
+      alertas: [
+        { critico: true,  texto: 'CRÍTICO: Nunca deixe os joelhos "fechar" (valgo) — devem seguir a linha dos pés.' },
+        { critico: false, texto: 'Não projete o tronco excessivamente para frente ou arredonde a lombar.' },
+        { critico: false, texto: 'Inicie sem carga para dominar o padrão antes de adicionar peso.' },
+        { critico: false, texto: 'Dor nos joelhos pode indicar problema na dorsiflexão do tornozelo.' },
+      ],
+      dicas: [
+        'Imagine "espalhar o chão" com os pés para ativar os glúteos.',
+        'Elevação leve sob os calcanhares pode ajudar iniciantes com mobilidade limitada.',
+      ]
+    },
+    {
+      id: 'leg-press',
+      nome: 'Leg Press 45°',
+      grupo: 'pernas',
+      grupoLabel: 'Pernas',
+      secundario: ['Glúteos', 'Isquiotibiais'],
+      dificuldade: 'iniciante',
+      icone: '<img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/quadriceps.png" alt="quadriceps"/>',
+      youtubeId: 'IZxyjW7MPJQ',
+      passos: [
+        'Pés na plataforma na largura dos ombros, mais acima para mais glúteo.',
+        'Segure os pegadores laterais e desbloqueie a trava de segurança.',
+        'Flexione os joelhos até ~90° ou conforme mobilidade permitir.',
+        'Empurre a plataforma de volta sem travar completamente os joelhos.',
+      ],
+      alertas: [
+        { critico: true,  texto: 'CRÍTICO: Nunca deixe as costas saírem do encosto durante a descida.' },
+        { critico: true,  texto: 'NUNCA trave os joelhos na extensão máxima — alto risco de lesão articular.' },
+        { critico: false, texto: 'Não desça além do ponto onde a lombar começa a sair do encosto.' },
+        { critico: false, texto: 'Sempre recoloque a trava de segurança ao finalizar a série.' },
+      ],
+      dicas: [
+        'Pés mais altos recrutam mais glúteos; mais baixos, mais quadríceps.',
+        'Descida em ~3 seg maximiza o trabalho muscular (fase excêntrica).',
+      ]
+    },
+
+    // ── OMBROS ─────────────────────────────────────────────
+    {
+      id: 'desenvolvimento',
+      nome: 'Desenvolvimento c/ Halteres',
+      grupo: 'ombros',
+      grupoLabel: 'Ombros',
+      secundario: ['Tríceps'],
+      dificuldade: 'iniciante',
+      icone: '<img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/shoulders.png" alt="shoulders"/>',
+      youtubeId: 'qEwKCR5JCog',
+      passos: [
+        'Sente-se num banco com encosto reto, um halter em cada mão na altura dos ombros.',
+        'Palmas voltadas para frente, cotovelos a ~90°.',
+        'Empurre os halteres para cima e levemente para o centro, sem tocá-los.',
+        'Desça de forma controlada até a posição inicial (altura dos ombros).',
+      ],
+      alertas: [
+        { critico: false, texto: 'Não empurre os halteres atrás da linha da cabeça — pressão na cervical.' },
+        { critico: false, texto: 'Evite arquear excessivamente a lombar ao empurrar o peso.' },
+        { critico: false, texto: 'Mantenha os cotovelos levemente à frente do plano do corpo.' },
+      ],
+      dicas: [
+        'Sentado oferece mais estabilidade e foco no deltóide.',
+        'Girar o punho para neutro na descida reduz pressão no ombro.',
+      ]
+    },
+    {
+      id: 'elevacao-lateral',
+      nome: 'Elevação Lateral',
+      grupo: 'ombros',
+      grupoLabel: 'Ombros',
+      secundario: ['Trapézio'],
+      dificuldade: 'iniciante',
+      icone: '<img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/shoulders.png" alt="shoulders"/>',
+      youtubeId: '3VcKaXpzqRo',
+      passos: [
+        'Em pé com halteres ao lado do corpo, cotovelos levemente flexionados.',
+        'Eleve os braços lateralmente até a altura dos ombros.',
+        'O cotovelo deve ser o ponto mais alto — como "derramar água de um balde".',
+        'Desça os halteres de forma lenta e controlada.',
+      ],
+      alertas: [
+        { critico: false, texto: 'Não use impulso do tronco — o movimento deve ser isolado no ombro.' },
+        { critico: false, texto: 'Eleve apenas até a altura dos ombros para proteger o manguito rotador.' },
+        { critico: false, texto: 'O deltóide medial é pequeno — use cargas leves e foque na técnica.' },
+      ],
+      dicas: [
+        'Inclinação ~10° para frente ativa mais o deltóide medial.',
+        'Descida em 3-4 seg maximiza o estímulo muscular.',
+      ]
+    },
+
+    // ── BRAÇOS ─────────────────────────────────────────────
+    {
+      id: 'rosca-direta',
+      nome: 'Rosca Direta',
+      grupo: 'bracos',
+      grupoLabel: 'Braços',
+      secundario: ['Braquial', 'Braquiorradial'],
+      dificuldade: 'iniciante',
+      icone: '<img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/biceps.png" alt="biceps"/>',
+      youtubeId: 'ykJmrZ5v0Oo',
+      passos: [
+        'Em pé, segure a barra ou halteres com pegada supinada (palmas para cima).',
+        'Mantenha os cotovelos fixos ao lado do tronco — ponto crítico do exercício.',
+        'Flexione os cotovelos subindo a carga até próxima ao peitoral.',
+        'Desça de forma controlada até extensão completa para alongar o bíceps.',
+      ],
+      alertas: [
+        { critico: true,  texto: 'CRÍTICO: Cotovelos móveis = bíceps menos ativado e risco de lesão no cotovelo.' },
+        { critico: false, texto: 'Não "jogue" a carga com impulso do quadril — reduz o trabalho muscular.' },
+        { critico: false, texto: 'Cuidado com hiperextensão dos cotovelos na posição final (descida).' },
+      ],
+      dicas: [
+        'Descida lenta (fase excêntrica) maximiza a ativação.',
+        'Girar o punho para fora ao subir ativa mais o bíceps breve.',
+      ]
+    },
+    {
+      id: 'triceps-corda',
+      nome: 'Tríceps na Corda (Pulley)',
+      grupo: 'bracos',
+      grupoLabel: 'Braços',
+      secundario: ['Antebraço'],
+      dificuldade: 'iniciante',
+      icone: '<img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/triceps.png" alt="triceps"/>',
+      youtubeId: '2-LAMcpzODU',
+      passos: [
+        'Posicione-se frente ao pulley alto com a corda, palmas voltadas uma para a outra.',
+        'Cotovelos fixos ao lado do tronco, leve inclinação do tronco para frente.',
+        'Estenda os cotovelos puxando a corda para baixo, separando as pontas ao final.',
+        'Retorne de forma controlada à posição inicial, sentindo o alongamento do tríceps.',
+      ],
+      alertas: [
+        { critico: false, texto: 'Não deixe os cotovelos abrirem para os lados durante a extensão.' },
+        { critico: false, texto: 'Evite balançar o tronco — movimento deve ser isolado no cotovelo.' },
+        { critico: false, texto: 'Não "quebre" os punhos (desvio ulnar) na posição final.' },
+      ],
+      dicas: [
+        'Separar as pontas da corda ao final ativa a cabeça lateral do tríceps.',
+        'Drop-sets (redução progressiva de carga) intensificam o treino.',
+      ]
+    },
+
+    // ── CORE ───────────────────────────────────────────────
+    {
+      id: 'prancha',
+      nome: 'Prancha Isométrica',
+      grupo: 'core',
+      grupoLabel: 'Core',
+      secundario: ['Glúteos', 'Ombros'],
+      dificuldade: 'iniciante',
+      icone: '<img width="25" height="25" src="https://img.icons8.com/ios-filled/50/FFFFFF/prelum.png" alt="prelum"/>',
+      youtubeId: 'ASdvN_XEl_c',
+      passos: [
+        'Apoie antebraços e pontas dos pés, formando linha reta tornozelo-cabeça.',
+        'Abdômen contraído e glúteos levemente ativados.',
+        'Respire normalmente e mantenha a posição pelo tempo definido.',
+        'Olhar para o chão, pescoço em posição neutra.',
+      ],
+      alertas: [
+        { critico: false, texto: 'Evite deixar o quadril subir ou cair — linha do corpo deve ser reta.' },
+        { critico: false, texto: 'Não prenda a respiração durante o exercício.' },
+        { critico: false, texto: 'Reduza o tempo se sentir dor lombar — provável postura incorreta.' },
+      ],
+      dicas: [
+        'Contraia o abdômen como se fosse apanhar um soco para maximizar a ativação.',
+        'Progrida gradualmente: 30s → 45s → 60s → 90s.',
+      ]
+    }
+  ];
+
+  /* ── STATE ── */
+  const state = {
+    filtroAtivo: 'todos',
+    buscaTerm: '',
+    cardExpandido: null,
+    videoCarregado: new Set()
+  };
+
+  /* ── SELETORES ── */
+  const $list      = document.getElementById('exList');
+  const $empty     = document.getElementById('emptyState');
+  const $countNum  = document.getElementById('countNum');
+  const $filterBar = document.getElementById('filterBar');
+  const $searchPanel = document.getElementById('searchPanel');
+  const $searchInput = document.getElementById('searchInput');
+  const $searchToggle = document.getElementById('searchToggle');
+  const $searchClear  = document.getElementById('searchClear');
+  const $toast     = document.getElementById('toast');
+
+  /* ────────────────────────────────────────
+     RENDER ENGINE
+  ──────────────────────────────────────── */
+  function getFiltrados() {
+    const term = state.buscaTerm.toLowerCase().trim();
+    return EXERCISES.filter(ex => {
+      const matchFiltro = state.filtroAtivo === 'todos' || ex.grupo === state.filtroAtivo;
+      const matchBusca  = !term
+        || ex.nome.toLowerCase().includes(term)
+        || ex.grupoLabel.toLowerCase().includes(term)
+        || ex.secundario.some(s => s.toLowerCase().includes(term));
+      return matchFiltro && matchBusca;
+    });
+  }
+
+  function buildCardHTML(ex) {
+    const diffClass = {
+      iniciante: 'iniciante', intermediario: 'intermediario', avancado: 'avancado'
+    }[ex.dificuldade];
+
+    const diffLabel = {
+      iniciante: 'Iniciante', intermediario: 'Intermediário', avancado: 'Avançado'
+    }[ex.dificuldade];
+
+    const passos = ex.passos.map((p, i) =>
+      `<div class="step">
+        <div class="step-num">${i + 1}</div>
+        <p class="step-text">${p}</p>
+      </div>`
+    ).join('');
+
+    const alertas = ex.alertas.map(a =>
+      `<div class="alert-item ${a.critico ? 'critical' : ''}">
+        <span class="alert-emoji">${a.critico ? '🚨' : '⚠️'}</span>
+        <p class="alert-text">${a.texto}</p>
+      </div>`
+    ).join('');
+
+    const dicas = ex.dicas.map(d =>
+      `<div class="tip-item">
+        <span class="tip-emoji">💡</span>
+        <p class="tip-text">${d}</p>
+      </div>`
+    ).join('');
+
+    const secundarios = ex.secundario.map(s =>
+      `<span class="secondary-tag">${s}</span>`
+    ).join('');
+
+    return `
+      <div class="card-head" onclick="toggleCard('${ex.id}')">
+        <div class="muscle-avatar">${ex.icone}</div>
+        <div class="card-meta">
+          <div class="ex-name">${ex.nome}</div>
+          <div class="tag-row">
+            <span class="tag tag-muscle">${ex.grupoLabel}</span>
+            <span class="tag tag-${diffClass}">${diffLabel}</span>
+          </div>
+        </div>
+        <div class="chevron-wrap">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="card-body" id="body-${ex.id}">
+        <div class="card-sep"></div>
+
+        <div class="secondary-bar">
+          <span class="secondary-label">Secundários:</span>
+          <div class="secondary-muscles">${secundarios}</div>
+        </div>
+
+        <div class="video-zone">
+          <div class="video-ratio">
+            <div class="video-thumb" id="thumb-${ex.id}" onclick="carregarVideo('${ex.id}', '${ex.youtubeId}')">
+              <div class="play-ring">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+              <span class="video-label">Toque para ver a execução</span>
+              <span class="yt-badge">▶ YouTube</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tabs-bar" id="tabs-${ex.id}">
+          <button class="tab-btn active" onclick="trocarTab(event,'${ex.id}','steps')">📋 Execução</button>
+          <button class="tab-btn"        onclick="trocarTab(event,'${ex.id}','alerts')">⚠️ Alertas</button>
+          <button class="tab-btn"        onclick="trocarTab(event,'${ex.id}','tips')">💡 Dicas</button>
+        </div>
+
+        <div class="tab-panel active" id="tp-steps-${ex.id}">
+          <div class="steps">${passos}</div>
+        </div>
+        <div class="tab-panel" id="tp-alerts-${ex.id}">
+          <div class="alerts">${alertas}</div>
+        </div>
+        <div class="tab-panel" id="tp-tips-${ex.id}">
+          <div class="tips">${dicas}</div>
+        </div>
+
+        <button class="add-btn" onclick="adicionarAoTreino('${ex.id}', '${ex.nome.replace(/'/g,"\\'")}')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          Adicionar ao Meu Treino
+        </button>
+      </div>
+    `;
+  }
+
+  function renderLista() {
+    const filtrados = getFiltrados();
+
+    $list.innerHTML = '';
+    $countNum.textContent = filtrados.length;
+
+    if (filtrados.length === 0) {
+      $empty.classList.add('show');
+      return;
+    }
+
+    $empty.classList.remove('show');
+    filtrados.forEach((ex, i) => {
+      const card = document.createElement('div');
+      card.className = 'exercise-card';
+      card.dataset.id = ex.id;
+      card.style.animationDelay = `${i * 0.055}s`;
+      card.innerHTML = buildCardHTML(ex);
+      $list.appendChild(card);
+    });
+  }
+
+  /* ────────────────────────────────────────
+     FILTRO POR GRUPO MUSCULAR
+  ──────────────────────────────────────── */
+  // Transforma o scroll vertical da rodinha do mouse em scroll horizontal
+  $filterBar.addEventListener('wheel', (e) => {
+    // Se a rodinha foi movida para cima/baixo
+    if (e.deltaY !== 0) {
+      e.preventDefault(); // Evita que a página inteira role junto
+      $filterBar.scrollLeft += e.deltaY;
+    }
+  });
+
+  // Evento de clique no filtro (agora limpo e direto ao ponto)
+  $filterBar.addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    state.filtroAtivo = chip.dataset.filter;
+    state.cardExpandido = null;
+    renderLista();
+  });
+  /* ────────────────────────────────────────
+     BUSCA EM TEMPO REAL
+  ──────────────────────────────────────── */
+  $searchToggle.addEventListener('click', () => {
+    const aberta = $searchPanel.classList.contains('open');
+    $searchPanel.classList.toggle('open');
+    $searchToggle.classList.toggle('active');
+
+    if (!aberta) {
+      requestAnimationFrame(() => $searchInput.focus());
+    } else {
+      // Fecha e limpa
+      state.buscaTerm = '';
+      $searchInput.value = '';
+      renderLista();
+    }
+  });
+
+  $searchInput.addEventListener('input', e => {
+    state.buscaTerm = e.target.value;
+    state.cardExpandido = null;
+    renderLista();
+  });
+
+  $searchClear.addEventListener('click', () => {
+    state.buscaTerm = '';
+    $searchInput.value = '';
+    $searchInput.focus();
+    renderLista();
+  });
+
+  /* ────────────────────────────────────────
+     ACCORDION — ABRIR/FECHAR CARD
+  ──────────────────────────────────────── */
+  function toggleCard(id) {
+    const cardAlvo = document.querySelector(`[data-id="${id}"]`);
+    if (!cardAlvo) return;
+
+    const estaExpandido = cardAlvo.classList.contains('expanded');
+
+    // Fecha todos
+    document.querySelectorAll('.exercise-card.expanded').forEach(c => {
+      c.classList.remove('expanded');
+    });
+
+    if (!estaExpandido) {
+      cardAlvo.classList.add('expanded');
+      state.cardExpandido = id;
+      // Scroll suave para não perder o contexto
+      setTimeout(() => {
+        const top = cardAlvo.getBoundingClientRect().top + window.scrollY;
+        const headerH = document.querySelector('.app-header').offsetHeight;
+        window.scrollTo({ top: top - headerH - 12, behavior: 'smooth' });
+      }, 60);
+    } else {
+      state.cardExpandido = null;
+    }
+  }
+
+  /* ────────────────────────────────────────
+     CARREGAR VÍDEO DO YOUTUBE (lazy load)
+     Evita carregar iframes desnecessariamente
+  ──────────────────────────────────────── */
+  function carregarVideo(cardId, ytId) {
+    if (state.videoCarregado.has(cardId)) return;
+    const thumb = document.getElementById(`thumb-${cardId}`);
+    if (!thumb) return;
+
+    state.videoCarregado.add(cardId);
+
+    // Fade out do placeholder
+    thumb.style.transition = 'opacity 0.25s';
+    thumb.style.opacity = '0';
+
+    setTimeout(() => {
+      const wrapper = thumb.parentElement;
+      thumb.remove();
+
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.setAttribute('allowfullscreen', '');
+      wrapper.appendChild(iframe);
+    }, 250);
+  }
+
+  /* ────────────────────────────────────────
+     TROCA DE ABAS (Execução / Alertas / Dicas)
+  ──────────────────────────────────────── */
+  function trocarTab(event, cardId, aba) {
+    // Evita propagação para o card-head
+    event.stopPropagation();
+    const tabsBar = document.getElementById(`tabs-${cardId}`);
+    if (!tabsBar) return;
+
+    // Botões
+    tabsBar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+
+    // Painéis
+    const card = document.querySelector(`[data-id="${cardId}"]`);
+    card.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+    const painel = document.getElementById(`tp-${aba}-${cardId}`);
+    if (painel) painel.classList.add('active');
+  }
+
+  /* ────────────────────────────────────────
+     ADICIONAR AO TREINO
+     (aqui você conectará ao módulo RF8)
+  ──────────────────────────────────────── */
+  function adicionarAoTreino(id, nome) {
+    // TODO: integrar com módulo de montagem de treino (RF8)
+    // Salvar em localStorage ou enviar para API
+    const treino = JSON.parse(localStorage.getItem('ff_treino') || '[]');
+    const jaExiste = treino.some(e => e.id === id);
+
+    if (jaExiste) {
+      showToast(`"${nome}" já está no treino!`);
+    } else {
+      treino.push({ id, nome, series: 3, reps: 12, cargaAnterior: 0 });
+      localStorage.setItem('ff_treino', JSON.stringify(treino));
+      showToast(`${nome} adicionado! 💪`);
+    }
+  }
+
+  /* ────────────────────────────────────────
+     TOAST NOTIFICATION
+  ──────────────────────────────────────── */
+  let toastTimer = null;
+  function showToast(msg) {
+    $toast.textContent = msg;
+    $toast.classList.add('show');
+
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => $toast.classList.remove('show'), 2600);
+  }
+
+  /* ────────────────────────────────────────
+     CONTADORES DE CHIPS
+  ──────────────────────────────────────── */
+  function atualizarContadores() {
+    const grupos = ['peito','costas','pernas','ombros','bracos','core'];
+    grupos.forEach(g => {
+      const el = document.getElementById(`cnt-${g}`);
+      if (el) el.textContent = EXERCISES.filter(e => e.grupo === g).length;
+    });
+    const elTodos = document.getElementById('cnt-todos');
+    if (elTodos) elTodos.textContent = EXERCISES.length;
+  }
+
+  /* ────────────────────────────────────────
+     INICIALIZAÇÃO
+  ──────────────────────────────────────── */
+  atualizarContadores();
+  renderLista();
+
+  // Expôe funções globais necessárias para os event handlers inline
+  window.toggleCard   = toggleCard;
+  window.carregarVideo = carregarVideo;
+  window.trocarTab    = trocarTab;
+  window.adicionarAoTreino = adicionarAoTreino;
+
+  </script>
+</body>
+</html>
