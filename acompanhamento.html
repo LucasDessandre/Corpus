@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CORPUS — Treino em Andamento</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    main { padding-bottom: 120px; }
+
+    .header-timer {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 18px;
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .workout-title {
+      padding: 20px 20px 10px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-1);
+    }
+
+    /* ── CARDS DE ACOMPANHAMENTO ── */
+    .track-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 0 20px;
+    }
+
+    .track-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.3s;
+    }
+
+    .track-card.done {
+      border-color: var(--ok);
+      background: rgba(61, 221, 140, 0.05);
+    }
+
+    .tc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px dashed var(--border-med);
+      padding-bottom: 12px;
+    }
+
+    .tc-name {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-1);
+      margin-bottom: 4px;
+    }
+
+    .tc-meta {
+      font-size: 11px;
+      color: var(--text-3);
+      font-weight: 600;
+    }
+
+    .btn-dor {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--danger-dim);
+      border: 1px solid rgba(255,59,59,0.3);
+      color: var(--danger);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    /* ── INPUTS DE CARGA (RF10) ── */
+    .tc-inputs {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .input-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    .track-input {
+      background: var(--bg-input);
+      border: 1px solid var(--border-med);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-1);
+      width: 100%;
+      text-align: center;
+    }
+
+    .track-input:focus { border-color: var(--accent); outline: none; }
+
+    .btn-registrar {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-registrar:active { filter: brightness(0.9); scale: 0.96; }
+    
+    .track-card.done .btn-registrar {
+      background: var(--ok);
+      color: #000;
+    }
+
+    /* ── FOOTER FINALIZAR ── */
+    .finish-footer {
+      position: fixed;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 430px;
+      padding: 12px 20px 24px;
+      background: rgba(8,9,13,0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+      z-index: 100;
+    }
+
+    .btn-finish {
+      width: 100%;
+      background: var(--text-1);
+      color: var(--bg-deep);
+      border: none;
+      border-radius: var(--radius);
+      padding: 16px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    /* ── MODAIS (RF9 e RF10) ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(5px);
+      z-index: 500;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-med);
+      border-radius: var(--radius-lg);
+      width: 90%; max-width: 340px;
+      padding: 20px;
+      display: flex; flex-direction: column; gap: 14px;
+      transform: translateY(20px);
+      transition: transform 0.3s;
+    }
+    .modal-overlay.open .modal-box { transform: translateY(0); }
+
+    .modal-title {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 18px; font-weight: 700; color: var(--text-1);
+    }
+    .modal-title.danger { color: var(--danger); }
+    .modal-title.warn { color: var(--warn); }
+
+    .modal-text { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+
+    .modal-actions { display: flex; gap: 10px; margin-top: 6px; }
+    .btn-modal {
+      flex: 1; padding: 12px; border-radius: var(--radius-sm); border: none;
+      font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .btn-cancel { background: var(--bg-input); color: var(--text-2); }
+    .btn-confirm { background: var(--accent); color: #000; }
+    .btn-danger-confirm { background: var(--danger); color: #fff; }
+
+    /* RF9 Inputs */
+    .modal-select, .modal-range {
+      width: 100%; padding: 10px; background: var(--bg-input); color: var(--text-1);
+      border: 1px solid var(--border-med); border-radius: var(--radius-sm); margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-main">
+      <div class="brand">
+        <span class="brand-text">CO<span class="accent">RPUS</span></span>
+      </div>
+      <div class="header-timer" id="timerDisplay">00:00</div>
+    </div>
+    <div class="page-meta">
+      <span class="page-title" id="workoutNameDisplay">Treino em Andamento</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="workout-title">Registre suas Cargas</div>
+    <div class="track-list" id="trackList">
+      </div>
+  </main>
+
+  <div class="finish-footer">
+    <button class="btn-finish" id="btnFinish">Finalizar Treino</button>
+  </div>
+
+  <div class="modal-overlay" id="modalSobrecarga">
+    <div class="modal-box">
+      <div class="modal-title warn">⚠️ Aumento Abrupto de Carga</div>
+      <div class="modal-text">
+        Você está tentando aumentar a carga em mais de 30% em relação ao treino anterior. 
+        <br><br>
+        <strong>Aviso:</strong> Aumentos drásticos são a principal causa de lesões articulares e tendinopatias. Recomendamos uma progressão gradual.
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal btn-cancel" onclick="fecharModal('modalSobrecarga')">Vou Reduzir</button>
+        <button class="btn-modal btn-confirm" id="btnForcarCarga">Manter Carga</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalDor">
+    <div class="modal-box">
+      <div class="modal-title danger">🚨 Registrar Desconforto</div>
+      <div class="modal-text">Informe o local e a intensidade da dor sentida neste exercício. O sistema ajustará seu histórico.</div>
+      
+      <select class="modal-select" id="dorLocal">
+        <option value="" disabled selected>Onde doeu?</option>
+        <option value="Ombro">Ombro</option>
+        <option value="Joelho">Joelho</option>
+        <option value="Lombar">Lombar</option>
+        <option value="Punho/Cotovelo">Punho / Cotovelo</option>
+        <option value="Outro">Outro</option>
+      </select>
+
+      <div class="modal-text" style="margin-bottom:-5px;">Intensidade da dor (1 a 10): <span id="dorValor" style="color:var(--danger); font-weight:bold;">5</span></div>
+      <input type="range" class="modal-range" id="dorRange" min="1" max="10" value="5" oninput="document.getElementById('dorValor').innerText=this.value">
+
+      <div class="modal-actions">
+        <button class="btn-modal btn-cancel" onclick="fecharModal('modalDor')">Cancelar</button>
+        <button class="btn-modal btn-danger-confirm" id="btnSalvarDor">Salvar Relato</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // 1. CARREGAR DADOS DO BD LOCAL
+    let treino = JSON.parse(localStorage.getItem('ff_treino') || '[]');
+    const nomeTreino = localStorage.getItem('ff_treino_nome') || 'Treino Personalizado';
+    document.getElementById('workoutNameDisplay').textContent = nomeTreino;
+
+    const $trackList = document.getElementById('trackList');
+    let exercicioPendenteId = null; 
+    let cargaPendente = 0;
+
+    // 2. RENDERIZAR LISTA
+    function renderTrackList() {
+      $trackList.innerHTML = '';
+      if(treino.length === 0) {
+        $trackList.innerHTML = '<p style="color:var(--text-3); text-align:center;">Nenhum exercício no treino atual.</p>';
+        return;
+      }
+
+      treino.forEach(ex => {
+        // Mock de carga anterior para testar o RF10 (Se for 0, fingimos que era 20kg para o teste)
+        const cargaAnterior = ex.cargaAnterior > 0 ? ex.cargaAnterior : 20; 
+
+        const card = document.createElement('div');
+        card.className = 'track-card';
+        card.id = `card-${ex.id}`;
+        card.innerHTML = `
+          <div class="tc-header">
+            <div>
+              <div class="tc-name">${ex.nome}</div>
+              <div class="tc-meta">Meta: ${ex.series} séries de ${ex.reps} reps • Última carga: ${cargaAnterior}kg</div>
+            </div>
+            <button class="btn-dor" onclick="abrirModalDor('${ex.id}')">⚠️ Senti Dor</button>
+          </div>
+          <div class="tc-inputs">
+            <div class="input-group">
+              <span class="input-lbl">Carga (kg)</span>
+              <input type="number" id="carga-${ex.id}" class="track-input" placeholder="${cargaAnterior}">
+            </div>
+            <div class="input-group">
+              <span class="input-lbl">Reps Feitas</span>
+              <input type="number" id="reps-${ex.id}" class="track-input" value="${ex.reps}">
+            </div>
+            <button class="btn-registrar" onclick="registrarCarga('${ex.id}', ${cargaAnterior})">✓ Salvar</button>
+          </div>
+        `;
+        $trackList.appendChild(card);
+      });
+    }
+
+    // 3. RF 10: REGISTRO E FEEDBACK DE CARGA
+    function registrarCarga(id, cargaAnterior) {
+      const inputCarga = document.getElementById(`carga-${id}`);
+      const novaCarga = parseFloat(inputCarga.value);
+
+      if (!novaCarga || novaCarga <= 0) {
+        showToast('Informe uma carga válida!');
+        return;
+      }
+
+      // Lógica RF 10: Se o aumento for maior que 30% da carga anterior
+      const limiteSeguro = cargaAnterior * 1.30; 
+      
+      if (novaCarga > limiteSeguro) {
+        // Dispara o alerta de segurança
+        exercicioPendenteId = id;
+        cargaPendente = novaCarga;
+        document.getElementById('modalSobrecarga').classList.add('open');
+      } else {
+        // Carga segura, salva direto
+        concluirExercicio(id, novaCarga);
+      }
+    }
+
+    // Se o usuário ignorar o aviso e forçar a carga (RF10)
+    document.getElementById('btnForcarCarga').addEventListener('click', () => {
+      fecharModal('modalSobrecarga');
+      concluirExercicio(exercicioPendenteId, cargaPendente);
+    });
+
+    function concluirExercicio(id, cargaSalva) {
+      document.getElementById(`card-${id}`).classList.add('done');
+      // Atualiza o "banco de dados" com a nova carga para o próximo treino
+      const exIndex = treino.findIndex(e => e.id === id);
+      if(exIndex !== -1) {
+        treino[exIndex].cargaAnterior = cargaSalva;
+        localStorage.setItem('ff_treino', JSON.stringify(treino));
+      }
+      showToast('Série registrada! 💪');
+    }
+
+    // 4. RF 9: REGISTRO DE DESCONFORTO
+    let dorExercicioAtual = null;
+
+    window.abrirModalDor = function(id) {
+      dorExercicioAtual = id;
+      document.getElementById('dorLocal').value = "";
+      document.getElementById('dorRange').value = 5;
+      document.getElementById('dorValor').innerText = 5;
+      document.getElementById('modalDor').classList.add('open');
+    }
+
+    document.getElementById('btnSalvarDor').addEventListener('click', () => {
+      const local = document.getElementById('dorLocal').value;
+      if(!local) { showToast('Selecione o local da dor!'); return; }
+      
+      fecharModal('modalDor');
+      // Aqui salvaríamos na tabela 'registro_lesao' do BD
+      showToast('Relato salvo. Cuidado ao prosseguir! 🚨');
+    });
+
+    // 5. UTILITÁRIOS
+    window.fecharModal = function(modalId) {
+      document.getElementById(modalId).classList.remove('open');
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const $toast = document.getElementById('toast');
+      $toast.textContent = msg;
+      $toast.classList.add('show');
+      if(toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => $toast.classList.remove('show'), 2600);
+    }
+
+    // Finalizar Treino e ir para o Histórico (Evolução)
+    document.getElementById('btnFinish').addEventListener('click', () => {
+      window.location.href = 'evolucao.html';
+    });
+
+    // Cronômetro Simples
+    let sec = 0;
+    setInterval(() => {
+      sec++;
+      const m = String(Math.floor(sec / 60)).padStart(2, '0');
+      const s = String(sec % 60).padStart(2, '0');
+      document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+    }, 1000);
+
+    // Init
+    renderTrackList();
+  </script>
+</body>
+</html>
