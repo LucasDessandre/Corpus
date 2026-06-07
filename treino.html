@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CORPUS — Meu Treino</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS compartilhado com index.html -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+
+    /* ── PADDING GERAL DO MAIN ─────────────────────────────────── */
+    main { padding-bottom: 150px; }
+
+    /* ══════════════════════════════════════════════════════════════
+       NOME DO TREINO
+    ══════════════════════════════════════════════════════════════ */
+    .treino-name-section { padding: 18px 20px 0; }
+
+    .field-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 8px;
+    }
+
+    .treino-name-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      transition: border-color 0.2s;
+    }
+
+    .treino-name-wrap:focus-within { border-color: var(--accent); }
+
+    .treino-name-input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-1);
+      letter-spacing: 0.02em;
+    }
+
+    .treino-name-input::placeholder { color: var(--text-3); font-weight: 400; font-family: 'Manrope', sans-serif; }
+
+    .name-icon { color: var(--text-3); flex-shrink: 0; }
+
+    /* ══════════════════════════════════════════════════════════════
+       BANNER DE RESUMO — RF7 atualiza em tempo real
+    ══════════════════════════════════════════════════════════════ */
+    .summary-banner {
+      margin: 14px 20px 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* linha de acento top */
+    .summary-banner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    .sum-cell {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 6px;
+      gap: 3px;
+    }
+
+    .sum-val {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      letter-spacing: -0.01em;
+    }
+
+    .sum-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    .sum-div {
+      width: 1px;
+      background: var(--border);
+      margin: 12px 0;
+      align-self: stretch;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       LINHA DE PESO (afeta cálculo calórico)
+    ══════════════════════════════════════════════════════════════ */
+    .peso-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px 0;
+    }
+
+    .peso-lbl {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-3);
+      white-space: nowrap;
+    }
+
+    .peso-field-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 5px 10px;
+      transition: border-color 0.2s;
+    }
+
+    .peso-field-wrap:focus-within { border-color: var(--accent); }
+
+    .peso-input {
+      background: none;
+      border: none;
+      outline: none;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-1);
+      width: 44px;
+      text-align: center;
+    }
+
+    .peso-input::-webkit-inner-spin-button,
+    .peso-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+    .peso-unit { font-size: 12px; font-weight: 600; color: var(--text-3); }
+
+    .peso-note { font-size: 11px; color: var(--text-3); flex: 1; }
+
+    /* ══════════════════════════════════════════════════════════════
+       CABEÇALHO DA LISTA
+    ══════════════════════════════════════════════════════════════ */
+    .list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 20px 8px;
+    }
+
+    .add-more-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-glow);
+      border-radius: var(--radius-sm);
+      padding: 7px 13px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .add-more-btn:active { scale: 0.93; }
+
+    /* ══════════════════════════════════════════════════════════════
+       TREINO LIST — container
+    ══════════════════════════════════════════════════════════════ */
+    .treino-list {
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       TREINO ITEM CARD
+    ══════════════════════════════════════════════════════════════ */
+    .treino-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+      animation: slideUp 0.4s both;
+      /* Transição de saída (remoção) */
+      transition: opacity 0.28s ease, transform 0.28s ease, max-height 0.35s ease;
+    }
+
+    /* Linha vertical de acento */
+    .treino-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--accent);
+      opacity: 0.55;
+    }
+
+    /* Estado ao remover */
+    .treino-item.removing {
+      opacity: 0;
+      transform: translateX(30px) scale(0.97);
+      max-height: 0;
+      border-width: 0;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    /* ── LINHA SUPERIOR: reorder · avatar · info · delete ── */
+    .item-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 14px 10px 18px;
+    }
+
+    /* botões de reordenação */
+    .order-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+
+    .order-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+      line-height: 1;
+    }
+
+    .order-btn:active:not(:disabled) {
+      background: var(--accent-dim);
+      border-color: var(--accent-glow);
+      color: var(--accent);
+      scale: 0.88;
+    }
+
+    .order-btn:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
+
+    /* avatar do exercício */
+    .item-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .item-info { flex: 1; min-width: 0; }
+
+    .item-name {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-1);
+      line-height: 1.2;
+      margin-bottom: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .item-tags { display: flex; gap: 4px; }
+
+    /* botão de deletar */
+    .del-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.18s;
+      flex-shrink: 0;
+    }
+
+    .del-btn:active {
+      background: var(--danger-dim);
+      border-color: rgba(255,59,59,0.3);
+      color: var(--danger);
+      scale: 0.88;
+    }
+
+    /* ── CONTROLES: séries e repetições (steppers) ── */
+    .item-controls {
+      display: flex;
+      gap: 10px;
+      padding: 2px 14px 0 18px;
+    }
+
+    .ctrl-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .ctrl-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    /* Stepper — componente +/- ideal para touch */
+    .stepper {
+      display: flex;
+      align-items: stretch;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      height: 44px;
+    }
+
+    .sp-btn {
+      width: 44px;
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 22px;
+      font-weight: 300;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .sp-btn:active { background: var(--accent-dim); }
+
+    .sp-btn:disabled { color: var(--text-3); opacity: 0.3; pointer-events: none; }
+
+    .sp-val {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-1);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* divisor vertical dentro do stepper */
+    .stepper .sp-div {
+      width: 1px;
+      background: var(--border);
+      align-self: stretch;
+    }
+
+    /* ── GASTO CALÓRICO POR EXERCÍCIO (RF7) ── */
+    .item-kcal {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 10px 18px 14px;
+    }
+
+    .kcal-val {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--warn);
+    }
+
+    .kcal-hint { font-size: 12px; color: var(--text-3); }
+
+    /* ══════════════════════════════════════════════════════════════
+       ALERTA DE VOLUME ALTO — aparece quando treino for longo
+    ══════════════════════════════════════════════════════════════ */
+    .volume-alert {
+      display: none;
+      margin: 12px 20px 0;
+      background: var(--warn-dim);
+      border: 1px solid rgba(255,122,0,0.25);
+      border-radius: var(--radius);
+      padding: 11px 14px;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .volume-alert.show { display: flex; }
+
+    .va-icon { font-size: 16px; flex-shrink: 0; }
+
+    .va-text { font-size: 12px; font-weight: 500; color: #FFA040; line-height: 1.5; }
+
+    /* ══════════════════════════════════════════════════════════════
+       EMPTY STATE
+    ══════════════════════════════════════════════════════════════ */
+    .treino-empty {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 52px 30px 40px;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .treino-empty.show { display: flex; }
+
+    .empty-dumbbell {
+      font-size: 52px;
+      opacity: 0.25;
+      margin-bottom: 4px;
+    }
+
+    .te-title {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-2);
+    }
+
+    .te-sub { font-size: 13px; color: var(--text-3); line-height: 1.65; }
+
+    .go-lib-btn {
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius);
+      padding: 13px 26px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #070901;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .go-lib-btn:active { scale: 0.96; filter: brightness(0.92); }
+
+    /* ══════════════════════════════════════════════════════════════
+       FOOTER — CTAs fixas acima da bottom-nav
+    ══════════════════════════════════════════════════════════════ */
+    .treino-footer {
+      position: fixed;
+      bottom: 64px; /* height of bottom-nav */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      padding: 8px 20px 10px;
+      background: linear-gradient(to top, var(--bg-deep) 72%, transparent);
+      display: none; /* shown via JS when treino has items */
+      flex-direction: column;
+      gap: 8px;
+      z-index: 150;
+    }
+
+    .treino-footer.show { display: flex; }
+
+    .footer-row { display: flex; gap: 8px; }
+
+    .btn-salvar {
+      flex: 1;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-med);
+      border-radius: var(--radius);
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-salvar:active {
+      color: var(--accent);
+      border-color: var(--accent-glow);
+      background: var(--accent-dim);
+      scale: 0.97;
+    }
+
+    .btn-iniciar {
+      flex: 2;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #070901;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-iniciar:active { scale: 0.97; filter: brightness(0.9); }
+
+    /* ══════════════════════════════════════════════════════════════
+       MODAL — bottom sheet (limpar treino)
+    ══════════════════════════════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.68);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 500;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-sheet {
+      width: 100%;
+      max-width: 430px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-med);
+      border-bottom: none;
+      border-radius: 20px 20px 0 0;
+      padding: 12px 20px 28px;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.1, 0.64, 1);
+    }
+
+    .modal-overlay.open .modal-sheet { transform: translateY(0); }
+
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--border-med);
+      border-radius: 99px;
+      margin: 0 auto 20px;
+    }
+
+    .sheet-title {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 8px;
+    }
+
+    .sheet-body {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.65;
+      margin-bottom: 22px;
+    }
+
+    .sheet-actions { display: flex; gap: 10px; }
+
+    .sheet-cancel {
+      flex: 1;
+      height: 48px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .sheet-cancel:active { scale: 0.97; }
+
+    .sheet-confirm {
+      flex: 1;
+      height: 48px;
+      background: rgba(255,59,59,0.1);
+      border: 1px solid rgba(255,59,59,0.3);
+      border-radius: var(--radius);
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--danger);
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .sheet-confirm:active { scale: 0.97; background: rgba(255,59,59,0.18); }
+
+    /* ══════════════════════════════════════════════════════════════
+       MICRO-ANIMAÇÕES EXTRAS
+    ══════════════════════════════════════════════════════════════ */
+    @keyframes popIn {
+      0%   { transform: scale(0.75); opacity: 0; }
+      70%  { transform: scale(1.1);  opacity: 1; }
+      100% { transform: scale(1);    opacity: 1; }
+    }
+
+    .sp-val.pop { animation: popIn 0.22s ease both; }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-main">
+      <div class="brand">
+        <span class="brand-text">CO<span class="accent">RPUS</span></span>
+        <span class="brand-badge">BETA</span>
+      </div>
+      <div class="header-actions">
+        <!-- Limpar treino -->
+        <button class="icon-btn" id="clearBtn" aria-label="Limpar treino" title="Limpar treino">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="page-meta">
+      <span class="page-title">Meu Treino</span>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════════════════════════════ -->
+  <main>
+
+    <!-- ── NOME DO TREINO ── -->
+    <section class="treino-name-section">
+      <span class="field-label">Nome do Treino</span>
+      <div class="treino-name-wrap">
+        <input
+          type="text"
+          class="treino-name-input"
+          id="treinoNome"
+          placeholder="Ex: Treino A — Peito e Tríceps"
+          maxlength="50"
+          spellcheck="false"
+          autocomplete="off">
+        <svg class="name-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ── BANNER DE RESUMO (RF7) ── -->
+    <div class="summary-banner">
+      <div class="sum-cell">
+        <span class="sum-val" id="sumEx">—</span>
+        <span class="sum-lbl">exercícios</span>
+      </div>
+      <div class="sum-div"></div>
+      <div class="sum-cell">
+        <span class="sum-val" id="sumMin">—</span>
+        <span class="sum-lbl">estimado</span>
+      </div>
+      <div class="sum-div"></div>
+      <div class="sum-cell">
+        <span class="sum-val" id="sumKcal">—</span>
+        <span class="sum-lbl">kcal est.</span>
+      </div>
+    </div>
+
+    <!-- ── PESO DO USUÁRIO (afeta cálculo calórico) ── -->
+    <div class="peso-row">
+      <span class="peso-lbl">Seu peso:</span>
+      <div class="peso-field-wrap">
+        <input
+          type="number"
+          class="peso-input"
+          id="pesoKg"
+          value="70"
+          min="40"
+          max="250"
+          step="1">
+        <span class="peso-unit">kg</span>
+      </div>
+      <span class="peso-note">— para calcular o gasto calórico</span>
+    </div>
+
+    <!-- ── ALERTA DE VOLUME ALTO ── -->
+    <div class="volume-alert" id="volumeAlert">
+      <span class="va-icon">⚠️</span>
+      <span class="va-text">Treino com volume elevado. Iniciantes devem começar com <strong>3–4 exercícios</strong> por sessão para evitar overtraining e lesões por sobrecarga.</span>
+    </div>
+
+    <!-- ── CABEÇALHO DA LISTA ── -->
+    <div class="list-header">
+      <span class="section-label" style="display:inline;padding:0;margin:0">Exercícios</span>
+      <button class="add-more-btn" id="addMoreBtn">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        Adicionar da Biblioteca
+      </button>
+    </div>
+
+    <!-- ── LISTA DE EXERCÍCIOS ── -->
+    <section class="treino-list" id="treinoList"></section>
+
+    <!-- ── EMPTY STATE ── -->
+    <div class="treino-empty" id="treinoEmpty">
+      <div class="empty-dumbbell">🏋️</div>
+      <div class="te-title">Nenhum exercício</div>
+      <div class="te-sub">
+        Navegue até a Biblioteca, toque em<br>
+        um exercício e clique em<br>
+        <strong style="color:var(--text-2)">"Adicionar ao Meu Treino"</strong>.
+      </div>
+      <button class="go-lib-btn" id="goLibBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+        Ir para Biblioteca
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       FOOTER — CTAs fixas (visível apenas com itens)
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="treino-footer" id="treinoFooter">
+    <div class="footer-row">
+      <button class="btn-salvar" id="btnSalvar">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+          <polyline points="7 3 7 8 15 8"/>
+        </svg>
+        Salvar
+      </button>
+      <button class="btn-iniciar" id="btnIniciar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        Iniciar Treino
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       BOTTOM NAVIGATION
+  ══════════════════════════════════════════════════════════════ -->
+  <nav class="bottom-nav">
+    <div class="nav-btn" id="nav-inicio">
+      <span class="nav-ico">🏠</span>
+      <span class="nav-lbl">Início</span>
+    </div>
+    <div class="nav-btn" id="nav-biblioteca">
+      <span class="nav-ico">📚</span>
+      <span class="nav-lbl">Biblioteca</span>
+    </div>
+    <div class="nav-btn active" id="nav-treino">
+      <span class="nav-ico">🗓️</span>
+      <span class="nav-lbl">Meu Treino</span>
+    </div>
+    <div class="nav-btn" id="nav-evolucao">
+      <span class="nav-ico">📊</span>
+      <span class="nav-lbl">Evolução</span>
+    </div>
+    <div class="nav-btn" id="nav-perfil">
+      <span class="nav-ico">👤</span>
+      <span class="nav-lbl">Perfil</span>
+    </div>
+  </nav>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       MODAL — bottom sheet para confirmar limpeza
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="clearModal">
+    <div class="modal-sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title">Limpar treino?</div>
+      <div class="sheet-body">
+        Todos os exercícios serão removidos da lista atual.
+        O treino salvo anteriormente <strong>não será apagado</strong>.
+      </div>
+      <div class="sheet-actions">
+        <button class="sheet-cancel"  id="modalCancel">Cancelar</button>
+        <button class="sheet-confirm" id="modalConfirm">Limpar tudo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       JAVASCRIPT
+  ══════════════════════════════════════════════════════════════ -->
+  <script>
+  /* ─────────────────────────────────────────────────────────────
+     METADATA DOS EXERCÍCIOS
+     Tabela de lookup para exibir ícone/grupo/dificuldade
+     sem precisar duplicar o array EXERCISES do index.html.
+     Chave = ex.id; deve estar em sincronia com index.html.
+  ───────────────────────────────────────────────────────────── */
+  const EX_META = {
+    'supino-reto':     { icone: 'https://img.icons8.com/ios-filled/50/FFFFFF/chest.png',       alt: 'peito',   grupoLabel: 'Peito',   dif: 'iniciante'     },
+    'crucifixo':       { icone: 'https://img.icons8.com/ios-filled/50/FFFFFF/chest.png',       alt: 'peito',   grupoLabel: 'Peito',   dif: 'iniciante'     },
+    'flexao':          { icone: 'https://img.icons8.com/ios-filled/50/FFFFFF/chest.png',       alt: 'peito',   grupoLabel: 'Peito',   dif: 'iniciante'     },
+    'remada-curvada':  { icone: 'https://img.icons8.com/ios-filled/50/FFFFFF/back-muscles.png',alt: 'costas',  grupoLabel: 'Costas',  dif: 'intermediario' },
+    'puxada-pulley':   { icone: 'https://img.icons8.com/ios-filled/50/FFFFFF/back-muscles.png',alt: 'costas',  grupoLabel: 'Costas',  dif: 'iniciante'     },
+    'terra':           { icone: 'https://img.icons8.com/ios-filled/50/FFFFFF/back-muscles.png',alt: 'costas',  grupoLabel: 'Costas',  dif: 'avancado'      },
+    'agachamento':     { icone: 'https://img.icons8.com/ios-filled/50/FFFFFF/quadriceps.png',  alt: 'pernas',  grupoLabel: 'Pernas',  dif: 'iniciante'     },
+    'leg-press':       { icone: 'https://img.icons8.com/ios-filled/50/FFFFFF/quadriceps.png',  alt: 'pernas',  grupoLabel: 'Pernas',  dif: 'iniciante'     },
+    'desenvolvimento': { icone: 'https://img.icons8.com/ios-filled/50/FFFFFF/shoulders.png',   alt: 'ombros',  grupoLabel: 'Ombros',  dif: 'iniciante'     },
+    'elevacao-lateral':{ icone: 'https://img.icons8.com/ios-filled/50/FFFFFF/shoulders.png',   alt: 'ombros',  grupoLabel: 'Ombros',  dif: 'iniciante'     },
+    'rosca-direta':    { icone: 'https://img.icons8.com/ios-filled/50/FFFFFF/biceps.png',      alt: 'bracos',  grupoLabel: 'Braços',  dif: 'iniciante'     },
+    'triceps-corda':   { icone: 'https://img.icons8.com/ios-filled/50/FFFFFF/triceps.png',     alt: 'bracos',  grupoLabel: 'Braços',  dif: 'iniciante'     },
+    'prancha':         { icone: 'https://img.icons8.com/ios-filled/50/FFFFFF/prelum.png',      alt: 'core',    grupoLabel: 'Core',    dif: 'iniciante'     },
+  };
+
+  /* ─────────────────────────────────────────────────────────────
+     CONSTANTES PARA CÁLCULO (RF7)
+     Fórmula baseada em MET (Metabolic Equivalent of Task)
+       Kcal = MET × PesoKg × TempoHoras
+     Tempo por exercício: séries × (reps × SEC_POR_REP + DESCANSO_S)
+  ───────────────────────────────────────────────────────────── */
+  const MET          = 5.0;  // treino de força (valor padrão ACSM)
+  const SEC_POR_REP  = 3;    // ~3 seg por repetição (excêntrico + concêntrico)
+  const DESCANSO_S   = 90;   // ~90 seg de descanso entre séries
+  const ALERTA_EX    = 6;    // nº de exercícios que dispara o aviso de volume
+
+  /* ─────────────────────────────────────────────────────────────
+     CHAVES DO localStorage  (mesmas usadas em index.html)
+  ───────────────────────────────────────────────────────────── */
+  const LS_KEY_TREINO = 'ff_treino';
+  const LS_KEY_NOME   = 'ff_treino_nome';
+  const LS_KEY_PESO   = 'ff_peso_kg';
+
+  /* ─────────────────────────────────────────────────────────────
+     ESTADO DA APLICAÇÃO
+  ───────────────────────────────────────────────────────────── */
+  let treino  = [];    // array de { id, nome, series, reps, cargaAnterior }
+  let pesoKg  = 70;   // peso do usuário (kg), padrão 70kg
+
+  /* ─────────────────────────────────────────────────────────────
+     SELETORES DOM
+  ───────────────────────────────────────────────────────────── */
+  const $list        = document.getElementById('treinoList');
+  const $empty       = document.getElementById('treinoEmpty');
+  const $footer      = document.getElementById('treinoFooter');
+  const $sumEx       = document.getElementById('sumEx');
+  const $sumMin      = document.getElementById('sumMin');
+  const $sumKcal     = document.getElementById('sumKcal');
+  const $pesoInput   = document.getElementById('pesoKg');
+  const $nomeInput   = document.getElementById('treinoNome');
+  const $toast       = document.getElementById('toast');
+  const $clearModal  = document.getElementById('clearModal');
+  const $volAlert    = document.getElementById('volumeAlert');
+
+  /* ─────────────────────────────────────────────────────────────
+     HELPERS DE CÁLCULO (RF7)
+  ───────────────────────────────────────────────────────────── */
+  function kcalExercicio(series, reps, peso = pesoKg) {
+    const totalSec = series * (reps * SEC_POR_REP + DESCANSO_S);
+    return MET * peso * (totalSec / 3600);
+  }
+
+  function minExercicio(series, reps) {
+    return series * ((reps * SEC_POR_REP + DESCANSO_S) / 60);
+  }
+
+  function formatMin(min) {
+    const m = Math.round(min);
+    if (m < 60) return `${m}min`;
+    const h = Math.floor(m / 60);
+    const r = m % 60;
+    return r > 0 ? `${h}h${r}min` : `${h}h`;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     ATUALIZA BANNER DE RESUMO (tempo real — RF7)
+  ───────────────────────────────────────────────────────────── */
+  function atualizarSummary() {
+    const n       = treino.length;
+    const temMin  = treino.reduce((s, e) => s + minExercicio(e.series, e.reps), 0);
+    const kcalTot = treino.reduce((s, e) => s + kcalExercicio(e.series, e.reps), 0);
+
+    $sumEx.textContent   = n > 0 ? n    : '—';
+    $sumMin.textContent  = n > 0 ? formatMin(temMin) : '—';
+    $sumKcal.textContent = n > 0 ? Math.round(kcalTot) : '—';
+
+    // Mostra/oculta footer e empty state
+    $footer.classList.toggle('show', n > 0);
+    $empty.classList.toggle('show', n === 0);
+
+    // Alerta de volume elevado
+    $volAlert.classList.toggle('show', n >= ALERTA_EX);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     ATUALIZA KCAL DE UM ITEM INDIVIDUALMENTE
+     (chamado pelo stepper para evitar re-render completo)
+  ───────────────────────────────────────────────────────────── */
+  function atualizarKcalItem(id) {
+    const ex = treino.find(e => e.id === id);
+    if (!ex) return;
+    const el = document.getElementById(`kcal-${id}`);
+    if (el) el.textContent = `~${Math.round(kcalExercicio(ex.series, ex.reps))} kcal`;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     CONSTRÓI HTML DE UM ITEM DO TREINO
+  ───────────────────────────────────────────────────────────── */
+  function buildItemHTML(ex, idx, total) {
+    const meta = EX_META[ex.id] ?? { icone: null, alt: 'exercício', grupoLabel: '—', dif: 'iniciante' };
+
+    const difLabel = { iniciante: 'Iniciante', intermediario: 'Intermediário', avancado: 'Avançado' }[meta.dif] ?? '';
+    const difClass = `tag-${meta.dif}`;
+    const kcalEst  = Math.round(kcalExercicio(ex.series, ex.reps));
+
+    const avatarContent = meta.icone
+      ? `<img width="22" height="22" src="${meta.icone}" alt="${meta.alt}">`
+      : '💪';
+
+    return `
+      <div class="item-top">
+        <!-- Botões de reordenação -->
+        <div class="order-btns">
+          <button class="order-btn" data-action="up"   data-id="${ex.id}" ${idx === 0         ? 'disabled' : ''} title="Mover para cima">↑</button>
+          <button class="order-btn" data-action="down" data-id="${ex.id}" ${idx === total - 1 ? 'disabled' : ''} title="Mover para baixo">↓</button>
+        </div>
+        <!-- Avatar -->
+        <div class="item-avatar">${avatarContent}</div>
+        <!-- Informações -->
+        <div class="item-info">
+          <div class="item-name">${ex.nome}</div>
+          <div class="item-tags">
+            <span class="tag tag-muscle">${meta.grupoLabel}</span>
+            <span class="tag ${difClass}">${difLabel}</span>
+          </div>
+        </div>
+        <!-- Deletar -->
+        <button class="del-btn" data-action="delete" data-id="${ex.id}" title="Remover ${ex.nome}" aria-label="Remover ${ex.nome}">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Steppers de séries e repetições -->
+      <div class="item-controls">
+
+        <div class="ctrl-group">
+          <span class="ctrl-label">Séries</span>
+          <div class="stepper">
+            <button class="sp-btn" data-action="dec" data-field="series" data-id="${ex.id}" ${ex.series <= 1 ? 'disabled' : ''}>−</button>
+            <div class="sp-div"></div>
+            <span class="sp-val" id="sv-series-${ex.id}">${ex.series}</span>
+            <div class="sp-div"></div>
+            <button class="sp-btn" data-action="inc" data-field="series" data-id="${ex.id}" ${ex.series >= 10 ? 'disabled' : ''}>+</button>
+          </div>
+        </div>
+
+        <div class="ctrl-group">
+          <span class="ctrl-label">Repetições</span>
+          <div class="stepper">
+            <button class="sp-btn" data-action="dec" data-field="reps" data-id="${ex.id}" ${ex.reps <= 1 ? 'disabled' : ''}>−</button>
+            <div class="sp-div"></div>
+            <span class="sp-val" id="sv-reps-${ex.id}">${ex.reps}</span>
+            <div class="sp-div"></div>
+            <button class="sp-btn" data-action="inc" data-field="reps" data-id="${ex.id}" ${ex.reps >= 50 ? 'disabled' : ''}>+</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Estimativa calórica deste exercício -->
+      <div class="item-kcal">
+        <span style="font-size:13px">🔥</span>
+        <span class="kcal-val" id="kcal-${ex.id}">~${kcalEst} kcal</span>
+        <span class="kcal-hint">estimados neste exercício</span>
+      </div>
+    `;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     RENDERIZA LISTA COMPLETA
+  ───────────────────────────────────────────────────────────── */
+  function renderLista() {
+    $list.innerHTML = '';
+
+    treino.forEach((ex, idx) => {
+      const item = document.createElement('div');
+      item.className   = 'treino-item';
+      item.dataset.id  = ex.id;
+      item.style.animationDelay = `${idx * 0.055}s`;
+      item.innerHTML   = buildItemHTML(ex, idx, treino.length);
+      $list.appendChild(item);
+    });
+
+    atualizarSummary();
+    salvarNoStorage();
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     DELEGAÇÃO DE EVENTOS — toda a lista via um único listener
+  ───────────────────────────────────────────────────────────── */
+  $list.addEventListener('click', e => {
+    const btn    = e.target.closest('[data-action]');
+    if (!btn) return;
+
+    const action = btn.dataset.action;
+    const id     = btn.dataset.id;
+    const idx    = treino.findIndex(ex => ex.id === id);
+    if (idx === -1) return;
+
+    /* ── REORDENAR ── */
+    if (action === 'up' && idx > 0) {
+      [treino[idx - 1], treino[idx]] = [treino[idx], treino[idx - 1]];
+      renderLista();
+      return;
+    }
+    if (action === 'down' && idx < treino.length - 1) {
+      [treino[idx], treino[idx + 1]] = [treino[idx + 1], treino[idx]];
+      renderLista();
+      return;
+    }
+
+    /* ── DELETAR ── */
+    if (action === 'delete') {
+      const itemEl  = document.querySelector(`.treino-item[data-id="${id}"]`);
+      const nomeSalvo = treino[idx].nome;
+
+      itemEl.classList.add('removing');
+      setTimeout(() => {
+        treino.splice(idx, 1);
+        renderLista();
+        showToast(`"${nomeSalvo}" removido`);
+      }, 300);
+      return;
+    }
+
+    /* ── STEPPER (inc / dec) ── */
+    if (action === 'inc' || action === 'dec') {
+      const field = btn.dataset.field;
+      const delta = action === 'inc' ? 1 : -1;
+      const min   = 1;
+      const max   = field === 'series' ? 10 : 50;
+      const prev  = treino[idx][field];
+      const next  = Math.max(min, Math.min(max, prev + delta));
+
+      if (next === prev) return; // sem mudança
+
+      treino[idx][field] = next;
+
+      // ── Atualização cirúrgica (sem re-render completo) ──
+      const valEl = document.getElementById(`sv-${field}-${id}`);
+      if (valEl) {
+        valEl.textContent = next;
+        // animação pop no número
+        valEl.classList.remove('pop');
+        void valEl.offsetWidth; // force reflow
+        valEl.classList.add('pop');
+        setTimeout(() => valEl.classList.remove('pop'), 250);
+      }
+
+      // Atualiza estados disabled dos botões do stepper sem re-render
+      const parentStepper = btn.closest('.stepper');
+      const [decBtn, incBtn] = parentStepper.querySelectorAll('.sp-btn');
+      if (decBtn) decBtn.disabled = next <= min;
+      if (incBtn) incBtn.disabled = next >= max;
+
+      atualizarKcalItem(id);
+      atualizarSummary();
+      salvarNoStorage();
+    }
+  });
+
+  /* ─────────────────────────────────────────────────────────────
+     PESO DO USUÁRIO — recalcula tudo ao mudar
+  ───────────────────────────────────────────────────────────── */
+  $pesoInput.addEventListener('input', () => {
+    const val = parseInt($pesoInput.value, 10);
+    if (!val || val < 40 || val > 250) return;
+    pesoKg = val;
+    localStorage.setItem(LS_KEY_PESO, pesoKg);
+    treino.forEach(ex => atualizarKcalItem(ex.id));
+    atualizarSummary();
+  });
+
+  /* ─────────────────────────────────────────────────────────────
+     NOME DO TREINO — persiste enquanto digita
+  ───────────────────────────────────────────────────────────── */
+  $nomeInput.addEventListener('input', () => {
+    localStorage.setItem(LS_KEY_NOME, $nomeInput.value);
+  });
+
+  /* ─────────────────────────────────────────────────────────────
+     PERSISTÊNCIA
+  ───────────────────────────────────────────────────────────── */
+  function salvarNoStorage() {
+    localStorage.setItem(LS_KEY_TREINO, JSON.stringify(treino));
+  }
+
+  document.getElementById('btnSalvar').addEventListener('click', () => {
+    salvarNoStorage();
+    localStorage.setItem(LS_KEY_NOME, $nomeInput.value);
+    showToast('Treino salvo com sucesso ✓');
+  });
+
+  /* ─────────────────────────────────────────────────────────────
+     INICIAR TREINO — navega para tela de acompanhamento (RF9/RF10)
+  ───────────────────────────────────────────────────────────── */
+  document.getElementById('btnIniciar').addEventListener('click', () => {
+    if (treino.length === 0) { showToast('Adicione exercícios primeiro!'); return; }
+    salvarNoStorage();
+    // TODO: navegar para acompanhamento.html quando a tela for criada
+    showToast('Tela de Acompanhamento em desenvolvimento 🚧');
+  });
+
+  /* ─────────────────────────────────────────────────────────────
+     MODAL — limpar treino
+  ───────────────────────────────────────────────────────────── */
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    if (treino.length === 0) { showToast('O treino já está vazio!'); return; }
+    $clearModal.classList.add('open');
+  });
+
+  document.getElementById('modalCancel').addEventListener('click', () => {
+    $clearModal.classList.remove('open');
+  });
+
+  document.getElementById('modalConfirm').addEventListener('click', () => {
+    $clearModal.classList.remove('open');
+    treino = [];
+    renderLista();
+    showToast('Treino limpo!');
+  });
+
+  // Fecha ao tocar no overlay escuro
+  $clearModal.addEventListener('click', e => {
+    if (e.target === $clearModal) $clearModal.classList.remove('open');
+  });
+
+  /* ─────────────────────────────────────────────────────────────
+     NAVEGAÇÃO ENTRE TELAS
+  ───────────────────────────────────────────────────────────── */
+  function irPara(url) { window.location.href = url; }
+
+  document.getElementById('nav-inicio').addEventListener('click',    () => irPara('index.html'));
+  document.getElementById('nav-biblioteca').addEventListener('click',() => irPara('index.html'));
+  document.getElementById('nav-evolucao').addEventListener('click',  () => irPara('evolucao.html'));
+  document.getElementById('addMoreBtn').addEventListener('click',    () => irPara('index.html'));
+  document.getElementById('goLibBtn').addEventListener('click',      () => irPara('index.html'));
+
+  /* ─────────────────────────────────────────────────────────────
+     TOAST
+  ───────────────────────────────────────────────────────────── */
+  let toastTimer = null;
+  function showToast(msg) {
+    $toast.textContent = msg;
+    $toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => $toast.classList.remove('show'), 2600);
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     INICIALIZAÇÃO — carrega dados do localStorage
+  ───────────────────────────────────────────────────────────── */
+  function init() {
+    // Carrega treino
+    try {
+      const raw = localStorage.getItem(LS_KEY_TREINO);
+      treino = raw ? JSON.parse(raw) : [];
+      // Garante campos mínimos (compatibilidade com versões futuras)
+      treino = treino.map(ex => ({
+        ...ex,
+        series: Number(ex.series) || 3,
+        reps:   Number(ex.reps)   || 12,
+        cargaAnterior: ex.cargaAnterior ?? 0,
+      }));
+    } catch {
+      treino = [];
+    }
+
+    // Carrega peso
+    const savedPeso = parseInt(localStorage.getItem(LS_KEY_PESO), 10);
+    if (savedPeso >= 40 && savedPeso <= 250) {
+      pesoKg = savedPeso;
+      $pesoInput.value = pesoKg;
+    }
+
+    // Carrega nome do treino
+    $nomeInput.value = localStorage.getItem(LS_KEY_NOME) || '';
+
+    // Renderiza
+    renderLista();
+  }
+
+  init();
+  </script>
+</body>
+</html>

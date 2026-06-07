@@ -102,7 +102,7 @@
       <span class="nav-ico">📚</span>
       <span class="nav-lbl">Biblioteca</span>
     </div>
-    <div class="nav-btn">
+    <div class="nav-btn" id="nav-treino">
       <span class="nav-ico">🗓️</span>
       <span class="nav-lbl">Meu Treino</span>
     </div>
@@ -826,6 +826,15 @@
   window.trocarTab    = trocarTab;
   window.adicionarAoTreino = adicionarAoTreino;
 
+  /* ────────────────────────────────────────
+     NAVEGAÇÃO
+  ──────────────────────────────────────── */
+  const btnMeuTreino = document.getElementById('nav-treino');
+  if (btnMeuTreino) {
+    btnMeuTreino.addEventListener('click', () => {
+      window.location.href = 'treino.html';
+    });
+  }
   </script>
 </body>
 </html>

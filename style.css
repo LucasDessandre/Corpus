@@ -12,8 +12,8 @@
       --border-med:    rgba(255,255,255,0.12);
 
       --accent:        #60c8f5;   /* azul claro — cor primária */
-      --accent-dim:    rgba(194,255,0,0.12);
-      --accent-glow:   rgba(194,255,0,0.25);
+      --accent-dim:   rgba(96, 200, 245, 0.12);
+      --accent-glow:   rgba(96, 200, 245, 0.25);
 
       --warn:          #FF7A00;   /* laranja — avisos */
       --warn-dim:      rgba(255,122,0,0.10);
