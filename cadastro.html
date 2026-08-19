@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CORPUS — Criar Conta</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="corpus.css">
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 20px 30px;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+    }
+
+    /* ── BOAS-VINDAS ── */
+    .welcome-section {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .welcome-logo {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-1);
+      margin-bottom: 8px;
+    }
+
+    .welcome-logo .accent { color: var(--accent); }
+
+    .welcome-subtitle {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.5;
+    }
+
+    /* ── FORMULÁRIO ── */
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .input-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      transition: border-color 0.2s;
+    }
+
+    .input-wrap:focus-within {
+      border-color: var(--accent);
+    }
+
+    .input-wrap svg {
+      color: var(--text-3);
+      flex-shrink: 0;
+    }
+
+    .auth-input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      color: var(--text-1);
+    }
+
+    .auth-input::placeholder {
+      color: var(--text-3);
+    }
+
+    /* Select customizado para o Nível de Experiência */
+    .auth-select {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px;
+      color: var(--text-1);
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .auth-select option {
+      background: var(--bg-elevated);
+      color: var(--text-1);
+    }
+
+    /* ── BOTÃO DE SUBMIT ── */
+    .btn-submit {
+      margin-top: 10px;
+      width: 100%;
+      height: 52px;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-submit:active {
+      scale: 0.98;
+      filter: brightness(0.9);
+    }
+
+    /* ── LINK PARA LOGIN ── */
+    .footer-link {
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-3);
+      margin-top: 30px;
+    }
+
+    .footer-link a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body data-shell="none">
+
+  <header class="topbar">
+    <div class="wrap">
+      <a class="logo" href="login.html" aria-label="Corpus">
+        <span class="logo-mark">CO<i>RPUS</i></span>
+        <span class="logo-tag">Beta</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="auth">
+    <div class="auth-pane">
+      <p class="kicker">Comece agora</p>
+      <h1>Crie a sua conta</h1>
+      <p class="lead">Leva menos de um minuto. Depois é só montar o primeiro treino com orientação técnica.</p>
+<p class="welcome-subtitle">Crie a sua conta para começar a treinar com orientação técnica e prevenir lesões.</p>
+    </div>
+
+    <form class="auth-form" id="cadastroForm" onsubmit="executarCadastro(event)">
+      
+      <div class="input-block">
+        <span class="field-label">Nome de Usuário</span>
+        <div class="input-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <input type="text" id="regNome" class="auth-input" placeholder="Como quer ser chamado?" required autocomplete="name">
+        </div>
+      </div>
+
+      <div class="input-block">
+        <span class="field-label">E-mail</span>
+        <div class="input-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          <input type="email" id="regEmail" class="auth-input" placeholder="seu@email.com" required autocomplete="email">
+        </div>
+      </div>
+
+      <div class="input-block">
+        <span class="field-label">Senha</span>
+        <div class="input-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <input type="password" id="regSenha" class="auth-input" placeholder="Crie uma senha forte" required autocomplete="new-password">
+        </div>
+      </div>
+
+      <div class="input-block">
+        <span class="field-label">Nível de Experiência</span>
+        <div class="input-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <select id="regNivel" class="auth-select" required>
+            <option value="" disabled selected>Selecione a sua experiência</option>
+            <option value="Iniciante">Iniciante</option>
+            <option value="Intermediário">Intermediário</option>
+            <option value="Avançado">Avançado</option>
+          </select>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit">Criar Minha Conta</button>
+    </form>
+
+    <div class="footer-link">
+      Já tem uma conta? <a href="login.html">Fazer Login</a>
+    </div>
+  </div>
+
+    <aside class="auth-aside">
+      <blockquote>Treine certo, evolua sempre.</blockquote>
+      <p>
+        44,4% dos praticantes de musculação já sofreram algum tipo de lesão, na maioria das
+        vezes por falta de orientação técnica e uso incorreto de cargas.
+      </p>
+      <div class="auth-points">
+        <div class="auth-point">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+          <span>Vídeo de execução e passo a passo de cada movimento</span>
+        </div>
+        <div class="auth-point">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+          <span>Alertas de segurança para proteger ombros, joelhos e coluna</span>
+        </div>
+        <div class="auth-point">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+          <span>Aviso automático quando o aumento de carga for brusco demais</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="corpus.js"></script>
+
+  <script>
+    function executarCadastro(event) {
+      event.preventDefault(); // Evita o recarregamento nativo da página
+
+      // Captura os dados inseridos
+      const nome  = document.getElementById('regNome').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const senha = document.getElementById('regSenha').value;
+      const nivel = document.getElementById('regNivel').value;
+
+      // Simulação de validação (Se o e-mail for o padrão mockado, acusa erro de duplicidade)
+      if (email.toLowerCase() === 'usuario@corpusapp.com') {
+        showToast('Erro: Este e-mail já está cadastrado! 🚨'); // Mensagem de erro condizente com a Msg1 do seu TG
+        return;
+      }
+
+      // Salva os dados simulando a persistência no banco MySQL antes de ir para o Login
+      localStorage.setItem('ff_user_name', nome);
+      localStorage.setItem('ff_user_email', email);
+      localStorage.setItem('ff_user_nivel', nivel);
+
+      showToast('Conta criada com sucesso! Redirecionando... ✓');
+
+      // Pós-condição: Direciona para a tela de login após 2 segundos
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 2000);
+    }
+
+    /* ── TOAST UTILS ── */
+    let toastTimer;
+    function showToast(msg) {
+      const $toast = document.getElementById('toast');
+      $toast.textContent = msg;
+      $toast.classList.add('show');
+      if(toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => $toast.classList.remove('show'), 2600);
+    }
+  </script>
+</body>
+</html>

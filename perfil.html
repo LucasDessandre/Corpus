@@ -9,254 +9,351 @@
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="corpus.css">
 
   <style>
-    main { padding-bottom: 100px; }
+    .perfil-cols {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      align-items: start;
+    }
 
-    /* ── CABEÇALHO DO PERFIL ── */
-    .profile-header {
+    /* Itens de grid recebem min-width:auto por padrão, o que impede encolher
+       abaixo do conteúdo. Sem isto o e-mail longo estoura a tela em 320px. */
+    .perfil-cols > * { min-width: 0; }
+
+    .perfil-main { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+
+    .panel-head {
       display: flex;
-      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .panel-h {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--t1);
+      letter-spacing: -0.01em;
+    }
+
+    .panel-sub { font-size: 13px; color: var(--t3); margin-top: 3px; }
+
+    .panel-note {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--t3);
+    }
+
+    /* ── Identidade ─────────────────────────────────────────────── */
+    .identity {
+      display: flex;
       align-items: center;
-      padding: 30px 20px 20px;
-      gap: 12px;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .identity::before {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--accent), transparent);
     }
 
     .avatar-circle {
-      width: 90px;
-      height: 90px;
+      display: grid;
+      place-items: center;
+      width: 76px; height: 76px;
+      flex-shrink: 0;
       border-radius: 50%;
-      background: var(--bg-elevated);
-      border: 2px solid var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Chakra Petch', sans-serif;
-      font-size: 32px;
+      background: linear-gradient(135deg, var(--accent-deep), var(--accent));
+      font-family: var(--font-display);
+      font-size: 26px;
       font-weight: 700;
-      color: var(--accent);
-      box-shadow: 0 0 20px var(--accent-glow);
+      color: #04121A;
     }
 
-    .profile-info {
-      text-align: center;
-    }
-
-    .profile-name {
-      font-family: 'Chakra Petch', sans-serif;
-      font-size: 22px;
+    .identity-name {
+      font-family: var(--font-display);
+      font-size: clamp(20px, 4vw, 25px);
       font-weight: 700;
-      color: var(--text-1);
-      margin-bottom: 4px;
+      line-height: 1.15;
+      color: var(--t1);
     }
 
-    .profile-email {
-      font-size: 13px;
-      color: var(--text-3);
-      font-weight: 500;
+    .identity-info { min-width: 0; }
+
+    .identity-mail {
+      font-size: 13.5px;
+      color: var(--t3);
+      margin: 4px 0 10px;
+      overflow-wrap: anywhere;
     }
 
     .badge-nivel {
       display: inline-block;
-      margin-top: 8px;
-      background: var(--accent-dim);
-      border: 1px solid var(--accent-glow);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--warn);
+      background: var(--warn-8);
+      border: 1px solid var(--warn-25);
+      border-radius: 99px;
+      padding: 4px 12px;
+    }
+
+    /* Abaixo de 380px o avatar sobe e o texto ocupa a largura toda */
+    @media (max-width: 379px) {
+      .identity { flex-direction: column; align-items: flex-start; gap: 14px; }
+      .avatar-circle { width: 62px; height: 62px; font-size: 22px; }
+    }
+
+    /* ── Dados físicos ──────────────────────────────────────────── */
+    .fisico-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      overflow: hidden;
+    }
+
+    .fisico-item { background: var(--surface); padding: 16px 18px; }
+
+    .fisico-item b {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.2;
       color: var(--accent);
-      padding: 4px 10px;
-      border-radius: 100px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
     }
 
-    /* ── MÉTRICAS RÁPIDAS ── */
-    .metrics-row {
-      display: flex;
-      gap: 10px;
-      padding: 0 20px 20px;
+    .fisico-item span {
+      display: block;
+      margin-top: 3px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--t3);
     }
 
-    .metric-box {
-      flex: 1;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+    /* ── Segurança ──────────────────────────────────────────────── */
+    .seg-list { display: flex; flex-direction: column; gap: 14px; }
 
-    .mb-val {
-      font-family: 'Chakra Petch', sans-serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text-1);
-    }
+    .seg-item { display: flex; gap: 13px; }
+    .seg-ico { flex-shrink: 0; font-size: 17px; line-height: 1.4; }
+    .seg-item b { display: block; font-size: 14px; color: var(--t1); margin-bottom: 3px; }
+    .seg-item p { font-size: 13px; line-height: 1.6; color: var(--t2); }
 
-    .mb-lbl {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-3);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
+    /* ── Lista de opções ────────────────────────────────────────── */
+    .side-h { margin-bottom: 16px; }
+    .opt-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
 
-    /* ── MENU DE OPÇÕES ── */
-    .menu-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding: 0 20px;
-    }
-
-    .menu-item {
+    .opt {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .menu-item:active {
-      background: var(--bg-elevated);
-      scale: 0.98;
-    }
-
-    .menu-item-left {
-      display: flex;
-      align-items: center;
       gap: 12px;
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid transparent;
+      border-radius: var(--r-sm);
+      text-align: left;
       font-size: 14px;
       font-weight: 600;
-      color: var(--text-2);
+      color: var(--t2);
+      transition: background 0.18s, color 0.18s, border-color 0.18s;
     }
 
-    .menu-icon {
-      color: var(--accent);
+    .opt:hover { background: var(--raised); color: var(--t1); border-color: var(--line); }
+    .opt-l { display: flex; align-items: center; gap: 12px; }
+    .opt-ico { display: grid; place-items: center; color: var(--t3); flex-shrink: 0; }
+    .opt:hover .opt-ico { color: var(--accent); }
+    .opt-chev { color: var(--t4); flex-shrink: 0; }
+
+    .opt-danger {
+      margin-top: 4px;
+      border-color: var(--danger-30);
+      color: #FF9B9B;
     }
 
-    .menu-chevron {
-      color: var(--text-3);
+    .opt-danger .opt-ico { color: #FF9B9B; }
+    .opt-danger:hover { background: var(--danger-8); border-color: var(--danger); color: #FFB0B0; }
+    .opt-danger:hover .opt-ico { color: var(--danger); }
+
+    /* ── Desktop ────────────────────────────────────────────────── */
+    @media (min-width: 720px) {
+      .fisico-grid { grid-template-columns: repeat(4, 1fr); }
     }
 
-    .menu-item.danger .menu-item-left {
-      color: var(--danger);
+    @media (min-width: 1080px) {
+      .perfil-cols { grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; }
+      .perfil-side { position: sticky; top: calc(var(--topbar-h) + 24px); }
+      .fisico-grid { grid-template-columns: repeat(2, 1fr); }
     }
-    .menu-item.danger .menu-icon {
-      color: var(--danger);
-    }
-
   </style>
 </head>
 <body>
 
-  <header class="app-header">
-    <div class="header-main">
-      <div class="brand">
-        <span class="brand-text">CO<span class="accent">RPUS</span></span>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumb" aria-label="Trilha de navegação">
+        <a href="dashboard.html">Início</a>
+        <span aria-hidden="true">/</span>
+        <span>Meu Perfil</span>
+      </nav>
+      <p class="kicker">Sua conta</p>
+      <h1>Meu Perfil</h1>
+      <p class="lead">Seus dados de cadastro e o nível de experiência que orienta as recomendações da plataforma.</p>
+    </div>
+  </section>
+
+  <main class="page-body perfil-page" id="conteudo">
+
+    <div class="perfil-cols">
+
+      <!-- Coluna principal -->
+      <div class="perfil-main">
+
+        <section class="panel identity">
+          <div class="avatar-circle">US</div>
+          <div class="identity-info">
+            <h2 class="identity-name">Usuário Teste</h2>
+            <p class="identity-mail">usuario@corpusapp.com</p>
+            <span class="badge-nivel">Intermediário</span>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-h">Dados físicos</h2>
+              <p class="panel-sub">Usados no cálculo do gasto calórico dos treinos</p>
+            </div>
+          </div>
+
+          <div class="fisico-grid">
+            <div class="fisico-item">
+              <b id="pesoDisplay">80 kg</b>
+              <span>Peso atual</span>
+            </div>
+            <div class="fisico-item">
+              <b>181 cm</b>
+              <span>Altura</span>
+            </div>
+            <div class="fisico-item">
+              <b>24,4</b>
+              <span>IMC estimado</span>
+            </div>
+            <div class="fisico-item">
+              <b>Intermediário</b>
+              <span>Nível de experiência</span>
+            </div>
+          </div>
+
+          <p class="panel-note">
+            O IMC é apenas um indicador geral e não distingue massa magra de gordura —
+            para quem treina com pesos, ele costuma superestimar. Use como referência ampla,
+            não como meta.
+          </p>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-h">Segurança do treino</h2>
+              <p class="panel-sub">O que a plataforma monitora para prevenir lesões</p>
+            </div>
+          </div>
+
+          <div class="seg-list">
+            <div class="seg-item">
+              <span class="seg-ico" aria-hidden="true">📊</span>
+              <div>
+                <b>Progressão de carga</b>
+                <p>Comparação automática entre a carga nova e o seu histórico, com alerta
+                   quando o aumento é grande demais.</p>
+              </div>
+            </div>
+            <div class="seg-item">
+              <span class="seg-ico" aria-hidden="true">🩹</span>
+              <div>
+                <b>Registro de desconfortos</b>
+                <p>Dores relatadas ficam vinculadas ao exercício e à carga em que
+                   apareceram, formando um histórico consultável.</p>
+              </div>
+            </div>
+            <div class="seg-item">
+              <span class="seg-ico" aria-hidden="true">🎯</span>
+              <div>
+                <b>Nível de experiência</b>
+                <p>Define quais exercícios são recomendados e o peso dos alertas exibidos
+                   na biblioteca.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </div>
-      <div class="header-actions">
-        <button class="icon-btn" aria-label="Configurações" title="Configurações">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-          </svg>
+
+      <!-- Coluna lateral -->
+      <aside class="perfil-side">
+        <section class="panel">
+          <h2 class="panel-h side-h">Conta</h2>
+          <div class="opt-list">
+        <button class="opt" onclick="showToast('Em desenvolvimento')">
+          <span class="opt-l">
+            <span class="opt-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
+            <span>Editar dados pessoais</span>
+          </span>
+          <svg class="opt-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
         </button>
-      </div>
-    </div>
-    <div class="page-meta">
-      <span class="page-title">Meu Perfil</span>
-    </div>
-  </header>
+        <button class="opt" onclick="showToast('Em desenvolvimento')">
+          <span class="opt-l">
+            <span class="opt-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></span>
+            <span>Histórico de lesões</span>
+          </span>
+          <svg class="opt-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <button class="opt" onclick="showToast('Em desenvolvimento')">
+          <span class="opt-l">
+            <span class="opt-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
+            <span>Ajuda e suporte</span>
+          </span>
+          <svg class="opt-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+          </div>
 
-  <main>
-    
-    <div class="profile-header">
-      <div class="avatar-circle">US</div>
-      <div class="profile-info">
-        <div class="profile-name">Usuário Teste</div>
-        <div class="profile-email">usuario@corpusapp.com</div>
-        <div class="badge-nivel">Intermediário</div>
-      </div>
-    </div>
+          <button class="opt opt-danger" id="btnLogout">
+            <span class="opt-l">
+              <span class="opt-ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span>
+              <span>Sair da conta</span>
+            </span>
+          </button>
+        </section>
+      </aside>
 
-    <div class="metrics-row">
-      <div class="metric-box">
-        <div class="mb-val" id="pesoDisplay">80 kg</div>
-        <div class="mb-lbl">Peso Atual</div>
-      </div>
-      <div class="metric-box">
-        <div class="mb-val">181 cm</div>
-        <div class="mb-lbl">Altura</div>
-      </div>
-    </div>
-
-    <div class="menu-list">
-      <div class="menu-item" onclick="showToast('Em desenvolvimento')">
-        <div class="menu-item-left">
-          <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          Editar Dados Pessoais
-        </div>
-        <svg class="menu-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
-      </div>
-
-      <div class="menu-item" onclick="showToast('Em desenvolvimento')">
-        <div class="menu-item-left">
-          <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
-          Histórico de Lesões (RF9)
-        </div>
-        <svg class="menu-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
-      </div>
-
-      <div class="menu-item" onclick="showToast('Em desenvolvimento')">
-        <div class="menu-item-left">
-          <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-          Ajuda e Suporte
-        </div>
-        <svg class="menu-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
-      </div>
-
-      <div class="menu-item danger" id="btnLogout">
-        <div class="menu-item-left">
-          <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-          Sair da Conta
-        </div>
-      </div>
     </div>
 
   </main>
 
-  <nav class="bottom-nav">
-    <div class="nav-btn" id="nav-inicio">
-      <span class="nav-ico">🏠</span>
-      <span class="nav-lbl">Início</span>
-    </div>
-    <div class="nav-btn" id="nav-biblioteca">
-      <span class="nav-ico">📚</span>
-      <span class="nav-lbl">Biblioteca</span>
-    </div>
-    <div class="nav-btn" id="nav-treino">
-      <span class="nav-ico">🗓️</span>
-      <span class="nav-lbl">Meu Treino</span>
-    </div>
-    <div class="nav-btn" id="nav-evolucao">
-      <span class="nav-ico">📊</span>
-      <span class="nav-lbl">Evolução</span>
-    </div>
-    <div class="nav-btn active" id="nav-perfil">
-      <span class="nav-ico">👤</span>
-      <span class="nav-lbl">Perfil</span>
-    </div>
-  </nav>
 
-  <div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div>
+
+  <script src="corpus.js"></script>
 
   <script>
     /* ────────────────────────────────────────
@@ -284,12 +381,6 @@
   window.location.href = url; 
 }
 
-// Configuração dos listeners de clique na bottom-nav
-document.getElementById('nav-inicio').addEventListener('click',     () => irPara('dashboard.html'));
-document.getElementById('nav-biblioteca').addEventListener('click', () => irPara('index.html'));
-document.getElementById('nav-treino').addEventListener('click',     () => irPara('treino.html'));
-document.getElementById('nav-evolucao').addEventListener('click',   () => irPara('evolucao.html'));
-document.getElementById('nav-perfil').addEventListener('click',     () => irPara('perfil.html'));
 
     /* ────────────────────────────────────────
        TOAST UTILS

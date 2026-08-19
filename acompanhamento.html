@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="corpus.css">
 
   <style>
     main { padding-bottom: 120px; }
@@ -228,19 +229,26 @@
 </head>
 <body>
 
-  <header class="app-header">
-    <div class="header-main">
-      <div class="brand">
-        <span class="brand-text">CO<span class="accent">RPUS</span></span>
-      </div>
-      <div class="header-timer" id="timerDisplay">00:00</div>
-    </div>
-    <div class="page-meta">
-      <span class="page-title" id="workoutNameDisplay">Treino em Andamento</span>
-    </div>
-  </header>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 
-  <main>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumb" aria-label="Trilha de navegação">
+        <a href="dashboard.html">Início</a>
+        <span aria-hidden="true">/</span>
+        <span>Treino em Andamento</span>
+        <span aria-hidden="true">/</span>
+        <span id="workoutNameDisplay">Treino</span>
+      </nav>
+      <p class="kicker">Sessão em andamento</p>
+      <h1>Treino em Andamento</h1>
+      <p class="lead">Registre a carga de cada exercício conforme avança. O sistema compara com o seu histórico e avisa quando o aumento for grande demais.</p>
+    
+      <div class="session-timer" id="timerDisplay">00:00</div>
+    </div>
+  </section>
+
+  <main class="page-body" id="conteudo">
     <div class="workout-title">Registre suas Cargas</div>
     <div class="track-list" id="trackList">
       </div>
@@ -290,6 +298,8 @@
   </div>
 
   <div class="toast" id="toast"></div>
+
+  <script src="corpus.js"></script>
 
   <script>
     // 1. CARREGAR DADOS DO BD LOCAL

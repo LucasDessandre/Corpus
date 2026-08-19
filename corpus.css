@@ -1,0 +1,738 @@
+/* ==========================================================================
+   CORPUS — Casca compartilhada do site
+   --------------------------------------------------------------------------
+   Este arquivo carrega DEPOIS do style.css em todas as telas. Ele:
+
+     1. Reescreve os tokens de cor no :root  → a paleta nova vale para os
+        componentes que já existiam, sem precisar reescrever o style.css.
+     2. Desfaz o formato de aplicativo       → tira a moldura de 430px e
+        esconde o cabeçalho antigo e a barra de abas inferior.
+     3. Fornece a casca do site              → topbar, gaveta mobile, cabeçalho
+        de página, rodapé, botões e utilidades.
+
+   Ordem de carregamento em cada página:
+       style.css  →  corpus.css  →  (css específico da página, se houver)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   01. TOKENS
+   Nomes novos + apelidos dos nomes antigos usados pelo style.css e pelos
+   blocos <style> das telas. Assim o CSS existente continua válido.
+   -------------------------------------------------------------------------- */
+:root {
+  /* Superfícies */
+  --void:    #050609;
+  --base:    #08090D;
+  --surface: #0E1016;
+  --raised:  #141722;
+  --input:   #1A1D29;
+
+  --line:     rgba(255, 255, 255, 0.06);
+  --line-med: rgba(255, 255, 255, 0.11);
+  --line-hi:  rgba(255, 255, 255, 0.18);
+
+  /* Marca */
+  --accent:      #5CC8F7;
+  --accent-deep: #2A9FD6;
+  --accent-8:    rgba(92, 200, 247, 0.08);
+  --accent-15:   rgba(92, 200, 247, 0.15);
+  --accent-30:   rgba(92, 200, 247, 0.30);
+
+  /* Semânticas */
+  --ok:        #3DDD8C;
+  --ok-8:      rgba(61, 221, 140, 0.09);
+  --ok-25:     rgba(61, 221, 140, 0.25);
+  --warn:      #FFA033;
+  --warn-8:    rgba(255, 160, 51, 0.09);
+  --warn-25:   rgba(255, 160, 51, 0.25);
+  --danger:    #FF4D4D;
+  --danger-8:  rgba(255, 77, 77, 0.09);
+  --danger-30: rgba(255, 77, 77, 0.30);
+
+  /* Texto */
+  --t1: #F2F3F7;
+  --t2: #9EA1B5;
+  --t3: #61647A;
+  --t4: #3E4152;
+
+  /* ---- Apelidos legados (style.css e <style> das telas) ---- */
+  --bg-deep:     var(--base);
+  --bg-card:     var(--surface);
+  --bg-elevated: var(--raised);
+  --bg-input:    var(--input);
+  --border:      var(--line);
+  --border-med:  var(--line-med);
+  --accent-dim:  var(--accent-8);
+  --accent-glow: var(--accent-30);
+  --warn-dim:    var(--warn-8);
+  --danger-dim:  var(--danger-8);
+  --ok-dim:      var(--ok-8);
+  --text-1:      var(--t1);
+  --text-2:      var(--t2);
+  --text-3:      var(--t3);
+
+  /* Tipografia */
+  --font-display: 'Chakra Petch', sans-serif;
+  --font-body:    'Manrope', system-ui, sans-serif;
+
+  /* Raio */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r:    14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+
+  --radius-sm: var(--r-sm);
+  --radius:    var(--r);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+
+  /* Layout */
+  --wrap:     1280px;
+  --pad:      20px;
+  --topbar-h: 60px;
+
+  /* Sombras */
+  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --sh-2: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --sh-3: 0 32px 80px rgba(0, 0, 0, 0.65);
+
+  --ease: cubic-bezier(0.22, 0.8, 0.28, 1);
+}
+
+/* --------------------------------------------------------------------------
+   02. RESET
+   O style.css já traz este reset, mas a Biblioteca não o carrega — ela usa
+   apenas corpus.css + biblioteca.css. Manter o reset aqui garante a mesma
+   base de cálculo (border-box) em todas as telas.
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   03. DESFAZ O FORMATO DE APLICATIVO
+   -------------------------------------------------------------------------- */
+body {
+  /* O style.css prendia o corpo numa faixa de 430px, simulando um telemóvel */
+  max-width: none;
+  background: var(--base);
+  color: var(--t1);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Cabeçalho antigo e barra de abas inferior deixam de existir no site */
+.app-header,
+.bottom-nav { display: none !important; }
+
+/* O espaço que sobrava embaixo (reservado para a barra de abas) é corrigido
+   pela regra `main.page-body` mais adiante, por especificidade — sem
+   !important, para que cada tela ainda possa ajustar o próprio respiro. */
+
+img { display: block; max-width: 100%; }
+button { background: none; border: none; cursor: pointer; font: inherit; color: inherit; }
+input, select, textarea { font: inherit; color: inherit; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   04. CONTÊINER
+   -------------------------------------------------------------------------- */
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  background: var(--accent);
+  color: #04121A;
+  padding: 12px 20px;
+  font-weight: 700;
+}
+.skip:focus { left: 0; top: 0; }
+
+/* --------------------------------------------------------------------------
+   04. TOPBAR
+   -------------------------------------------------------------------------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  background: rgba(8, 9, 13, 0.72);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.topbar.stuck {
+  border-bottom-color: var(--line);
+  background: rgba(8, 9, 13, 0.92);
+}
+
+.topbar .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logo { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+.logo-mark {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  color: var(--t1);
+}
+
+.logo-mark i { font-style: normal; color: var(--accent); }
+
+.logo-tag {
+  font-family: var(--font-display);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent-30);
+  background: var(--accent-8);
+  padding: 3px 6px;
+  border-radius: var(--r-xs);
+}
+
+.menu { display: none; align-items: center; gap: 2px; }
+
+.menu a {
+  position: relative;
+  display: block;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--t2);
+  border-radius: var(--r-xs);
+  transition: color 0.18s;
+}
+
+.menu a:hover,
+.menu a[aria-current] { color: var(--t1); }
+
+.menu a[aria-current]::after {
+  content: '';
+  position: absolute;
+  left: 14px; right: 14px; bottom: 2px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.topbar-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+.shell-btn {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--line-med);
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--t1);
+  background: none;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+}
+
+.shell-btn:hover { border-color: var(--accent-30); background: var(--accent-8); }
+
+/* Estando na própria página da conta, o botão fica marcado */
+.shell-btn[aria-current] {
+  border-color: var(--accent-30);
+  background: var(--accent-8);
+  color: var(--accent);
+}
+
+.burger {
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border: 1px solid var(--line-med);
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--t1);
+  cursor: pointer;
+}
+
+.burger:hover { border-color: var(--line-hi); }
+
+.drawer {
+  overflow: hidden;
+  max-height: 0;
+  background: var(--surface);
+  border-bottom: 1px solid transparent;
+  transition: max-height 0.32s var(--ease), border-color 0.32s;
+}
+
+.drawer.open { max-height: 380px; border-bottom-color: var(--line); }
+.drawer ul { padding: 8px 0 14px; list-style: none; }
+
+.drawer a {
+  display: block;
+  padding: 13px var(--pad);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--t2);
+  max-width: var(--wrap);
+  margin-inline: auto;
+}
+
+.drawer a[aria-current] { color: var(--accent); }
+
+/* --------------------------------------------------------------------------
+   05. CABEÇALHO DE PÁGINA
+   -------------------------------------------------------------------------- */
+.page-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 40px 0 34px;
+  border-bottom: 1px solid var(--line);
+}
+
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: -60% -10% auto -10%;
+  height: 520px;
+  background:
+    radial-gradient(520px 280px at 20% 12%, rgba(92, 200, 247, 0.14), transparent 68%),
+    radial-gradient(420px 240px at 84% 0%, rgba(61, 221, 140, 0.07), transparent 70%);
+  pointer-events: none;
+}
+
+.page-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(680px 300px at 28% 24%, #000 10%, transparent 75%);
+  -webkit-mask-image: radial-gradient(680px 300px at 28% 24%, #000 10%, transparent 75%);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.page-hero .wrap { position: relative; z-index: 1; }
+
+.crumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t3);
+  margin-bottom: 18px;
+}
+
+.crumb a { color: inherit; text-decoration: none; transition: color 0.18s; }
+.crumb a:hover { color: var(--accent); }
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.kicker::before { content: ''; width: 26px; height: 1px; background: var(--accent); }
+
+.page-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 5.5vw, 48px);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  color: var(--t1);
+  margin-bottom: 14px;
+  max-width: 18ch;
+}
+
+.page-hero h1 em {
+  font-style: normal;
+  background: linear-gradient(100deg, var(--accent), var(--ok));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.page-hero .lead {
+  max-width: 58ch;
+  font-size: clamp(14px, 2vw, 16px);
+  color: var(--t2);
+}
+
+/* Ações que acompanham o título da página */
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+/* No hero os botões aparecem em qualquer largura, ao contrário do .shell-btn
+   da topbar, que só surge no desktop */
+.hero-actions .shell-btn { display: inline-flex; text-decoration: none; }
+
+.shell-btn-danger { color: #FF9B9B; border-color: var(--danger-30); }
+.shell-btn-danger:hover { border-color: var(--danger); background: var(--danger-8); }
+
+/* Cronómetro da sessão de treino */
+.session-timer {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 22px;
+  padding: 10px 20px;
+  background: var(--surface);
+  border: 1px solid var(--accent-30);
+  border-radius: var(--r-sm);
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Faixa de números do cabeçalho */
+.hero-figures {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+  max-width: 720px;
+  margin-top: 28px;
+}
+
+.figure { background: var(--base); padding: 16px 18px; }
+
+.figure b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(20px, 3.6vw, 28px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--t1);
+}
+
+.figure span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--t3);
+  line-height: 1.4;
+}
+
+.figure.hl b { color: var(--accent); }
+
+/* --------------------------------------------------------------------------
+   06. ÁREA DE CONTEÚDO
+   -------------------------------------------------------------------------- */
+/* O seletor é qualificado com `main` de propósito: os blocos <style> de cada
+   tela vêm depois deste arquivo na cascata e definem larguras/paddings
+   próprios (.dash-wrap, .treino-wrap, ...). Com (0,1,1) o contêiner do site
+   vence essas regras de classe simples sem precisar reescrevê-las. */
+main.page-body {
+  display: block;
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding: 34px var(--pad) 76px;
+}
+
+/* Colunas para telas que ganham espaço no desktop */
+.cols-2 { display: grid; grid-template-columns: 1fr; gap: 26px; align-items: start; }
+.cols-side { display: grid; grid-template-columns: 1fr; gap: 26px; align-items: start; }
+
+/* Item de grid tem min-width:auto por padrão e não encolhe abaixo do próprio
+   conteúdo — é a causa mais comum de transbordamento horizontal em telas
+   estreitas (uma palavra longa, um e-mail, uma tabela). */
+.cols-2 > *,
+.cols-side > * { min-width: 0; }
+
+/* Painel genérico */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 20px;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--t3);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.section-label {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--t3);
+}
+
+/* --------------------------------------------------------------------------
+   07. RODAPÉ
+   -------------------------------------------------------------------------- */
+.footer {
+  border-top: 1px solid var(--line);
+  background: var(--void);
+  padding: 48px 0 24px;
+}
+
+.footer-cols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  margin-bottom: 34px;
+}
+
+.footer-brand .logo { margin-bottom: 14px; }
+.footer-brand p { font-size: 13.5px; color: var(--t3); max-width: 40ch; }
+
+.footer h4 {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--t1);
+  margin-bottom: 15px;
+}
+
+.footer ul { list-style: none; }
+.footer li + li { margin-top: 9px; }
+.footer li, .footer a { font-size: 13.5px; color: var(--t3); text-decoration: none; }
+.footer a { transition: color 0.18s; }
+.footer a:hover { color: var(--accent); }
+
+.disclaimer {
+  display: flex;
+  gap: 12px;
+  padding: 16px 18px;
+  background: var(--warn-8);
+  border: 1px solid var(--warn-25);
+  border-radius: var(--r);
+  font-size: 13px;
+  line-height: 1.65;
+  color: #E8BE92;
+  margin-bottom: 26px;
+}
+
+.footer-end {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--t4);
+}
+
+/* --------------------------------------------------------------------------
+   08. TOAST (sobrescreve o do style.css, que ficava sobre a barra inferior)
+   -------------------------------------------------------------------------- */
+.toast {
+  position: fixed;
+  left: 50%; bottom: 26px;
+  z-index: 300;
+  transform: translateX(-50%) translateY(18px);
+  background: var(--raised);
+  border: 1px solid var(--line-hi);
+  border-radius: 99px;
+  padding: 13px 24px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--t1);
+  box-shadow: var(--sh-3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s, transform 0.28s var(--ease);
+}
+
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* --------------------------------------------------------------------------
+   09. TELAS DE AUTENTICAÇÃO (login e cadastro)
+   -------------------------------------------------------------------------- */
+.auth {
+  min-height: calc(100vh - var(--topbar-h));
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+}
+
+.auth-pane {
+  width: 100%;
+  max-width: 440px;
+  margin-inline: auto;
+  padding: 44px var(--pad) 60px;
+}
+
+.auth-pane h1 {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 5vw, 36px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+
+.auth-pane .lead { font-size: 14.5px; color: var(--t2); margin-bottom: 30px; }
+
+/* Painel lateral com o argumento do produto — só aparece no desktop */
+.auth-aside {
+  display: none;
+  position: relative;
+  overflow: hidden;
+  min-height: 100%;
+  padding: 56px 48px;
+  border-left: 1px solid var(--line);
+  background:
+    radial-gradient(520px 320px at 70% 15%, rgba(92, 200, 247, 0.14), transparent 70%),
+    var(--void);
+}
+
+.auth-aside blockquote {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  margin-bottom: 18px;
+  max-width: 18ch;
+}
+
+.auth-aside p { font-size: 14px; color: var(--t2); max-width: 34ch; }
+
+.auth-points { margin-top: 34px; display: flex; flex-direction: column; gap: 14px; }
+
+.auth-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--t2);
+}
+
+.auth-point svg { flex-shrink: 0; color: var(--ok); margin-top: 3px; }
+
+/* --------------------------------------------------------------------------
+   10. BREAKPOINTS
+   -------------------------------------------------------------------------- */
+@media (min-width: 560px) {
+  .hero-figures { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (min-width: 860px) {
+  :root { --pad: 30px; }
+  .footer-cols { grid-template-columns: 2fr 1fr 1fr; gap: 48px; }
+  .cols-2    { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+  .cols-side { grid-template-columns: minmax(0, 1fr) 340px; gap: 30px; }
+  .auth { grid-template-columns: 1fr 1fr; }
+  .auth-aside { display: flex; flex-direction: column; justify-content: center; }
+}
+
+@media (min-width: 1080px) {
+  :root { --topbar-h: 68px; }
+  .menu { display: flex; }
+  .burger { display: none; }
+  .drawer { display: none; }
+  .shell-btn { display: flex; }
+  .page-hero { padding: 60px 0 48px; }
+  main.page-body { padding: 44px var(--pad) 88px; }
+}
+
+/* --------------------------------------------------------------------------
+   11. AJUSTES POR TELA NO DESKTOP
+   As telas foram desenhadas para uma coluna de 430px. Aqui elas aproveitam a
+   largura extra em vez de esticar um card por toda a tela.
+   -------------------------------------------------------------------------- */
+@media (min-width: 860px) {
+  /* Início — treino de hoje à esquerda, indicadores empilhados à direita */
+  .dash-wrap .metrics-grid { grid-template-columns: 1fr; }
+}
+/* Evolução e Perfil trazem o próprio layout de desktop no <style> da página */
+
+@media (min-width: 1080px) {
+  /* Meu Treino — resumo fixo acompanhando a lista de exercícios */
+  .treino-side { position: sticky; top: calc(var(--topbar-h) + 24px); }
+}
+
+/* Alvos de toque (RNF 01) */
+@media (pointer: coarse) {
+  .burger, .shell-btn { min-height: 44px; }
+  .burger { width: 44px; }
+  .drawer a { padding-block: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

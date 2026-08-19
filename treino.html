@@ -10,6 +10,7 @@
 
   <!-- CSS compartilhado com index.html -->
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="corpus.css">
 
   <style>
 
@@ -678,33 +679,45 @@
   <!-- ══════════════════════════════════════════════════════════════
        HEADER
   ══════════════════════════════════════════════════════════════ -->
-  <header class="app-header">
-    <div class="header-main">
-      <div class="brand">
-        <span class="brand-text">CO<span class="accent">RPUS</span></span>
-        <span class="brand-badge">BETA</span>
-      </div>
-      <div class="header-actions">
-        <!-- Limpar treino -->
-        <button class="icon-btn" id="clearBtn" aria-label="Limpar treino" title="Limpar treino">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumb" aria-label="Trilha de navegação">
+        <a href="dashboard.html">Início</a>
+        <span aria-hidden="true">/</span>
+        <span>Meu Treino</span>
+      </nav>
+      <p class="kicker">Planejamento</p>
+      <h1>Meu Treino</h1>
+      <p class="lead">Monte a sua rotina escolhendo exercícios da biblioteca, defina séries e repetições e acompanhe a estimativa de duração e gasto calórico.</p>
+
+      <div class="hero-actions">
+        <a class="shell-btn" href="index.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          Adicionar da biblioteca
+        </a>
+        <button class="shell-btn shell-btn-danger" id="clearBtn" title="Limpar treino">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polyline points="3 6 5 6 21 6"/>
             <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
             <path d="M10 11v6M14 11v6"/>
             <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
           </svg>
+          Limpar treino
         </button>
       </div>
     </div>
-    <div class="page-meta">
-      <span class="page-title">Meu Treino</span>
-    </div>
-  </header>
+  </section>
 
   <!-- ══════════════════════════════════════════════════════════════
        MAIN CONTENT
   ══════════════════════════════════════════════════════════════ -->
-  <main>
+  <main class="page-body" id="conteudo">
 
     <!-- ── NOME DO TREINO ── -->
     <section class="treino-name-section">
@@ -825,30 +838,8 @@
   <!-- ══════════════════════════════════════════════════════════════
        BOTTOM NAVIGATION
   ══════════════════════════════════════════════════════════════ -->
-<nav class="bottom-nav">
-  <div class="nav-btn" id="nav-inicio">
-    <span class="nav-ico">🏠</span>
-    <span class="nav-lbl">Início</span>
-  </div>
-  <div class="nav-btn" id="nav-biblioteca">
-    <span class="nav-ico">📚</span>
-    <span class="nav-lbl">Biblioteca</span>
-  </div>
-  <div class="nav-btn active" id="nav-treino">
-    <span class="nav-ico">🗓️</span>
-    <span class="nav-lbl">Meu Treino</span>
-  </div>
-  <div class="nav-btn" id="nav-evolucao">
-    <span class="nav-ico">📊</span>
-    <span class="nav-lbl">Evolução</span>
-  </div>
-  <div class="nav-btn" id="nav-perfil">
-    <span class="nav-ico">👤</span>
-    <span class="nav-lbl">Perfil</span>
-  </div>
-</nav>
 
-  <!-- Toast -->
+<!-- Toast -->
   <div class="toast" id="toast"></div>
 
   <!-- ══════════════════════════════════════════════════════════════
@@ -872,6 +863,8 @@
   <!-- ══════════════════════════════════════════════════════════════
        JAVASCRIPT
   ══════════════════════════════════════════════════════════════ -->
+  <script src="corpus.js"></script>
+
   <script>
   /* ─────────────────────────────────────────────────────────────
      METADATA DOS EXERCÍCIOS
@@ -1226,12 +1219,6 @@ function irPara(url) {
   window.location.href = url; 
 }
 
-// Configuração dos listeners de clique na bottom-nav
-document.getElementById('nav-inicio').addEventListener('click',     () => irPara('dashboard.html'));
-document.getElementById('nav-biblioteca').addEventListener('click', () => irPara('index.html'));
-document.getElementById('nav-treino').addEventListener('click',     () => irPara('treino.html'));
-document.getElementById('nav-evolucao').addEventListener('click',   () => irPara('evolucao.html'));
-document.getElementById('nav-perfil').addEventListener('click',     () => irPara('perfil.html'));
 
   /* ─────────────────────────────────────────────────────────────
      TOAST
