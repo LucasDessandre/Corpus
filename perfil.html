@@ -354,43 +354,63 @@
 <div class="toast" id="toast"></div>
 
   <script src="corpus.js"></script>
+  <script src="api.js"></script>
 
   <script>
-    /* ────────────────────────────────────────
-       CARREGAR DADOS DO LOCALSTORAGE
-    ──────────────────────────────────────── */
-    // Puxa o peso salvo na tela de "Meu Treino"
+    /* ────────────────────────────────────────────────────────────────
+       Exibe o usuário autenticado.
+
+       Antes esta tela mostrava "Usuário Teste / usuario@corpusapp.com"
+       fixos no HTML. Agora lê a sessão gravada no login (RF 02).
+       ──────────────────────────────────────────────────────────────── */
+
+    /* Tela interna: sem sessão, volta para o login */
+    if (CorpusAPI.sessao.exigir()) {
+
+      const u = CorpusAPI.sessao.ler();
+
+      document.querySelector('.identity-name').textContent = u.nome;
+      document.querySelector('.identity-mail').textContent = u.email;
+
+      /* Iniciais para o avatar: "Lucas Grauth" vira "LG" */
+      document.querySelector('.avatar-circle').textContent =
+        u.nome.trim().split(/\s+/).slice(0, 2).map((p) => p[0]).join('').toUpperCase();
+
+      /* O nível aparece em dois lugares: no cartão de identidade e na
+         grade de dados físicos. */
+      document.querySelector('.badge-nivel').textContent = u.nivel;
+      const celulaNivel = document.querySelector('.fisico-item:last-child b');
+      if (celulaNivel) celulaNivel.textContent = u.nivel;
+    }
+
+    /* Peso salvo na tela "Meu Treino" — usado no cálculo do gasto calórico */
     const pesoSalvo = localStorage.getItem('ff_peso_kg');
     if (pesoSalvo) {
       document.getElementById('pesoDisplay').textContent = `${pesoSalvo} kg`;
+
+      /* Recalcula o IMC com o peso real: IMC = peso / altura² */
+      const alturaM = 1.81;   /* enquanto a altura não vem do cadastro */
+      const imc = Number(pesoSalvo) / (alturaM * alturaM);
+      const celulaImc = document.querySelectorAll('.fisico-item b')[2];
+      if (celulaImc) celulaImc.textContent = imc.toFixed(1).replace('.', ',');
     }
 
     /* ────────────────────────────────────────
-       BOTÃO DE LOGOUT
+       SAIR DA CONTA — encerra a sessão de verdade
     ──────────────────────────────────────── */
     document.getElementById('btnLogout').addEventListener('click', () => {
-      // Como ainda não temos a tela de login real, apenas mostramos um aviso
+      CorpusAPI.sessao.encerrar();
       showToast('Saindo da conta...');
-      // Em uma versão final, aqui faríamos: window.location.href = 'login.html';
+      setTimeout(() => { window.location.href = 'login.html'; }, 900);
     });
 
-    /* ────────────────────────────────────────
-       NAVEGAÇÃO ENTRE TELAS
-    ──────────────────────────────────────── */
- function irPara(url) { 
-  window.location.href = url; 
-}
-
-
-    /* ────────────────────────────────────────
-       TOAST UTILS
-    ──────────────────────────────────────── */
+    /* ── TOAST ── */
     let toastTimer;
     function showToast(msg) {
       const $toast = document.getElementById('toast');
       $toast.textContent = msg;
       $toast.classList.add('show');
-      if(toastTimer) clearTimeout(toastTimer);
+      if (toastTimer) clearTimeout(toastTimer);
       toastTimer = setTimeout(() => $toast.classList.remove('show'), 2600);
     }
   </script>

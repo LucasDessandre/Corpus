@@ -447,9 +447,14 @@
 <div class="toast" id="toast"></div>
 
   <script src="corpus.js"></script>
+  <script src="api.js"></script>
 
   <script>
-  const USER    = JSON.parse(localStorage.getItem('corpus_user')     || 'null') || { nome: 'Atleta', nivel: 'Iniciante' };
+  /* Tela interna: sem sessão ativa, volta para o login */
+  CorpusAPI.sessao.exigir();
+
+  /* A sessão é gravada pelo login (RF 02) na chave `corpus_user`. */
+  const USER    = CorpusAPI.sessao.ler() || { nome: 'Atleta', nivel: 'Iniciante' };
   const TREINO  = JSON.parse(localStorage.getItem('ff_treino')       || '[]');
   const METRICAS = JSON.parse(localStorage.getItem('corpus_metricas') || 'null') || {
     treinos: 3, cargaTotal: 25.5, streak: 4,

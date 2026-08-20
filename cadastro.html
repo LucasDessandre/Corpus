@@ -272,44 +272,83 @@
   <div class="toast" id="toast"></div>
 
   <script src="corpus.js"></script>
+  <script src="api.js"></script>
 
   <script>
-    function executarCadastro(event) {
-      event.preventDefault(); // Evita o recarregamento nativo da página
+    /* ────────────────────────────────────────────────────────────────
+       RF 01 — Cadastro de usuário, gravando no banco via API.
 
-      // Captura os dados inseridos
+       Antes esta tela simulava a persistência no localStorage. Agora ela
+       chama POST /api/usuarios/cadastro, que valida os dados, aplica o
+       hash bcrypt na senha e faz o INSERT na tabela `usuario`.
+       ──────────────────────────────────────────────────────────────── */
+
+    const $form   = document.getElementById('cadastroForm');
+    const $botao  = $form.querySelector('.btn-submit');
+    const textoOriginal = $botao.textContent;
+
+    async function executarCadastro(event) {
+      event.preventDefault();   /* impede o recarregamento nativo da página */
+
       const nome  = document.getElementById('regNome').value.trim();
       const email = document.getElementById('regEmail').value.trim();
       const senha = document.getElementById('regSenha').value;
       const nivel = document.getElementById('regNivel').value;
 
-      // Simulação de validação (Se o e-mail for o padrão mockado, acusa erro de duplicidade)
-      if (email.toLowerCase() === 'usuario@corpusapp.com') {
-        showToast('Erro: Este e-mail já está cadastrado! 🚨'); // Mensagem de erro condizente com a Msg1 do seu TG
+      /* Validação no cliente: resposta imediata, sem ida ao servidor.
+         Ela NÃO substitui a validação da API — qualquer um pode burlar o
+         que roda no navegador. É só para melhorar a experiência. */
+      if (!nome || !email || !senha || !nivel) {
+        showToast('Preencha todos os campos.');
+        return;
+      }
+      if (senha.length < 6) {
+        showToast('A senha deve ter ao menos 6 caracteres.');
         return;
       }
 
-      // Salva os dados simulando a persistência no banco MySQL antes de ir para o Login
-      localStorage.setItem('ff_user_name', nome);
-      localStorage.setItem('ff_user_email', email);
-      localStorage.setItem('ff_user_nivel', nivel);
+      /* Trava o botão para evitar dois cadastros com duplo clique */
+      travarBotao(true, 'Criando conta...');
+
+      const r = await CorpusAPI.cadastrar(nome, email, senha, nivel);
+
+      if (!r.ok) {
+        /* 409 = e-mail já cadastrado (Msg1 do TG). A API já devolve a
+           mensagem pronta, então basta exibir. */
+        showToast(r.status === 409 ? 'Este e-mail já está cadastrado. 🚨' : r.mensagem);
+        travarBotao(false);
+        return;
+      }
 
       showToast('Conta criada com sucesso! Redirecionando... ✓');
 
-      // Pós-condição: Direciona para a tela de login após 2 segundos
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 2000);
+      /* Pós-condição do RF 01: segue para o login para a primeira
+         autenticação. O usuário NÃO entra logado direto — quem autentica
+         é o RF 02. */
+      setTimeout(() => { window.location.href = 'login.html'; }, 1600);
     }
 
-    /* ── TOAST UTILS ── */
+    function travarBotao(travado, texto) {
+      $botao.disabled = travado;
+      $botao.textContent = travado ? texto : textoOriginal;
+      $botao.style.opacity = travado ? '0.6' : '';
+      $botao.style.cursor  = travado ? 'not-allowed' : '';
+    }
+
+    /* Avisa logo na abertura se a API estiver fora do ar, em vez de deixar
+       o usuário preencher o formulário inteiro para só então descobrir. */
+    CorpusAPI.online().then((ok) => {
+      if (!ok) showToast('Servidor indisponível — inicie a API (npm start).');
+    });
+
+    /* ── TOAST ── */
     let toastTimer;
     function showToast(msg) {
       const $toast = document.getElementById('toast');
       $toast.textContent = msg;
       $toast.classList.add('show');
-      if(toastTimer) clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => $toast.classList.remove('show'), 2600);
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => $toast.classList.remove('show'), 3200);
     }
   </script>
 </body>
