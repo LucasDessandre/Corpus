@@ -14,8 +14,24 @@
 const CorpusAPI = (() => {
   'use strict';
 
-  /* Endereço base. Em produção, troque pelo domínio do servidor. */
-  const BASE = 'http://localhost:3000/api';
+  /* ------------------------------------------------------------------------
+     Endereço base da API.
+
+     É um caminho RELATIVO de propósito. Como o servidor entrega o site e a
+     API juntos, '/api' resolve sozinho para a origem correta:
+
+        no seu PC ......  http://localhost:3000/api
+        hospedado ......  https://seu-app.onrender.com/api
+
+     Fixar 'http://localhost:3000' aqui funcionaria só na sua máquina: no ar,
+     o navegador de cada visitante tentaria falar com o localhost DELE.
+
+     A exceção é abrir os arquivos com duplo clique (protocolo file://), onde
+     não existe servidor de origem — aí é preciso apontar o endereço completo.
+     ---------------------------------------------------------------------- */
+  const BASE = location.protocol === 'file:'
+    ? 'http://localhost:3000/api'
+    : '/api';
 
   /* Chave única da sessão. O dashboard já lia `corpus_user`, então este é o
      nome adotado em todas as telas — antes o cadastro gravava em três chaves

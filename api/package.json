@@ -1,0 +1,23 @@
+{
+  "name": "corpus-api",
+  "version": "1.0.0",
+  "description": "API REST do Corpus — plataforma de prevenção de lesões na musculação (TG Fatec Araçatuba)",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mysql2": "^3.11.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "author": "Heitor Scavassa Barbosa e Lucas Grauth Dessandre",
+  "license": "MIT"
+}

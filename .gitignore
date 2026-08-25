@@ -1,0 +1,29 @@
+# ===========================================================================
+#  Arquivos que NAO devem ir para o GitHub
+# ===========================================================================
+
+# Dependencias do Node. Sao 8,8 MB e reinstalaveis com "npm install" —
+# versionar isso incha o repositorio sem nenhum ganho.
+node_modules/
+
+# CREDENCIAIS. Contem a senha do banco de dados.
+# Nunca versione este arquivo. O .env.example serve de modelo.
+.env
+api/.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# Configuracoes locais de ferramentas
+.claude/
+.vscode/
+.idea/
+
+# Lixo do Windows / macOS
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Backups gerados durante a manutencao
+*.backup-*

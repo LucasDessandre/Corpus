@@ -1,0 +1,9 @@
+# Dependências instaladas pelo npm — reinstaláveis com `npm install`
+node_modules/
+
+# Variáveis de ambiente: contém a SENHA do banco. Nunca versionar.
+.env
+
+# Logs
+*.log
+npm-debug.log*
